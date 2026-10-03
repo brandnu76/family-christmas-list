@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta name="theme-color" content="#121a16" />
+<title>Family Christmas List</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,620&family=Outfit:wght@370;500;650&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --bg: #101712;
+    --bg-2: #18211c;
+    --card: #1c2822;
+    --card-2: #24312a;
+    --line: rgba(212, 180, 131, 0.28);
+    --gold: #e0c48a;
+    --gold-dim: #b89a62;
+    --ink: #f6f1e7;
+    --muted: #b3a794;
+    --faint: #7f7466;
+    --rose: #e07a68;
+    --pine: #8fbf9a;
+    --danger: #e07a68;
+    --shadow: 0 18px 40px rgba(0,0,0,.28);
+    --radius: 18px;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    min-height: 100vh;
+    font-family: Outfit, system-ui, sans-serif;
+    color: var(--ink);
+    background:
+      radial-gradient(900px 420px at 50% -10%, rgba(224,196,138,.16), transparent 60%),
+      radial-gradient(700px 380px at 100% 100%, rgba(143,191,154,.08), transparent 50%),
+      var(--bg);
+  }
+  button, input, textarea, select { font: inherit; color: inherit; }
+  button { cursor: pointer; }
+  a { color: var(--gold); }
+  .wrap { width: min(920px, calc(100% - 28px)); margin: 0 auto; padding: 22px 0 64px; }
+  header.top {
+    display: flex; align-items: center; justify-content: space-between; gap: 12px;
+    margin-bottom: 22px;
+  }
+  .brand { display: flex; align-items: center; gap: 12px; }
+  .mark {
+    width: 42px; height: 42px; border-radius: 50%;
+    display: grid; place-items: center;
+    background: radial-gradient(circle at 35% 30%, #f3e2bc, #c4a15a 55%, #6d5428);
+    color: #1a140c; font-family: Fraunces, serif; font-weight: 620; font-size: 18px;
+    box-shadow: inset 0 0 0 2px rgba(255,255,255,.25);
+  }
+  h1, h2, h3 { font-family: Fraunces, Georgia, serif; font-weight: 620; letter-spacing: -0.02em; margin: 0; }
+  .brand h1 { font-size: 22px; line-height: 1; }
+  .brand p { margin: 3px 0 0; color: var(--muted); font-size: 13px; }
+  .screen { display: none; }
+  .screen.on { display: block; }
+  .hero {
+    background: linear-gradient(180deg, rgba(224,196,138,.08), transparent 70%), var(--card);
+    border: 1px solid var(--line);
+    border-radius: 24px;
+    padding: 22px;
+    box-shadow: var(--shadow);
+  }
+  .kicker { color: var(--gold); letter-spacing: .16em; text-transform: uppercase; font-size: 11px; font-weight: 650; }
+  .hero h2 { font-size: 34px; margin: 8px 0 8px; line-height: 1.05; }
+  .lede { color: var(--muted); margin: 0 0 18px; line-height: 1.45; }
+  .grid { display: grid; gap: 12px; }
+  .kid-picks { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .pick, .btn, .btn-ghost, .btn-gold {
+    border-radius: 14px; border: 1px solid var(--line); background: var(--card-2);
+    padding: 14px 14px; text-align: left;
+  }
+  .pick strong { display: block; font-size: 16px; }
+  .pick span, .hint { color: var(--muted); font-size: 12px; }
+  .btn, .btn-gold, .btn-ghost {
+    text-align: center; font-weight: 650;
+  }
+  .btn-gold { background: linear-gradient(180deg, #f0d7a4, #c9a56a); color: #241b10; border-color: transparent; }
+  .btn-ghost { background: transparent; }
+  .row { display: flex; gap: 8px; flex-wrap: wrap; }
+  .row > * { flex: 1; }
+  label { display: block; font-size: 13px; color: var(--muted); margin: 12px 0 6px; }
+  input, textarea, select {
+    width: 100%; background: #121a16; border: 1px solid var(--line); border-radius: 12px;
+    padding: 12px 12px; outline: none;
+  }
+  textarea { min-height: 74px; resize: vertical; }
+  input:focus, textarea:focus, select:focus { border-color: var(--gold-dim); }
+  .card {
+    background: var(--card); border: 1px solid var(--line); border-radius: var(--radius);
+    padding: 14px; margin-top: 10px;
+  }
+  .wish-top { display: flex; justify-content: space-between; gap: 8px; align-items: flex-start; }
+  .prio { font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: var(--gold); }
+  .prio.must { color: var(--rose); }
+  .meta { color: var(--muted); font-size: 13px; margin-top: 4px; line-height: 1.4; }
+  .chips { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 10px; }
+  .chip {
+    border: 1px solid var(--line); border-radius: 999px; padding: 6px 10px; font-size: 12px; background: transparent; color: var(--ink);
+  }
+  .chip.on { background: rgba(224,196,138,.16); border-color: var(--gold-dim); color: var(--gold); }
+  .chip.got { background: rgba(143,191,154,.16); border-color: #6ea67a; color: var(--pine); }
+  .stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin: 14px 0; }
+  .stat { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 12px; }
+  .stat b { display: block; font-family: Fraunces, serif; font-size: 22px; }
+  .stat span { color: var(--muted); font-size: 12px; }
+  .hidden-note { color: var(--pine); font-size: 12px; margin-top: 8px; }
+  .danger { color: var(--danger); background: transparent; border: none; padding: 0; font-size: 13px; }
+  .top-actions { display: flex; gap: 8px; }
+  .icon-btn {
+    border: 1px solid var(--line); background: transparent; border-radius: 999px; padding: 8px 12px; font-size: 13px;
+  }
+  .tabs { display: flex; gap: 6px; margin: 12px 0; }
+  .tabs button { flex: 1; }
+  .empty { color: var(--muted); text-align: center; padding: 22px 8px; }
+  .toast {
+    position: fixed; left: 50%; bottom: 18px; transform: translateX(-50%);
+    background: #f6f1e7; color: #1a140c; padding: 10px 14px; border-radius: 999px;
+    font-size: 13px; font-weight: 650; display: none; z-index: 5;
+  }
+  .section-label { margin: 18px 0 0; color: var(--gold); font-size: 13px; letter-spacing: .08em; text-transform: uppercase; }
+  .linkish { color: var(--gold); word-break: break-all; font-size: 13px; }
+  @media (min-width: 800px) {
+    .kid-picks { grid-template-columns: repeat(3, 1fr); }
+    .parent-layout { display: grid; grid-template-columns: 280px 1fr; gap: 16px; align-items: start; }
+  }
+  @media print {
+    body { background: white; color: black; }
+    .no-print { display: none !important; }
+    .card, .stat, .hero { box-shadow: none; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <div class="brand">
+      <div class="mark">✦</div>
+      <div>
+        <h1 id="brandName">Family Christmas List</h1>
+        <p id="brandSub">Wishes in. Surprises kept.</p>
+      </div>
+    </div>
+    <div class="top-actions no-print">
+      <button class="icon-btn" id="homeBtn" hidden>Home</button>
+    </div>
+  </header>
+
+  <section class="screen" id="setup">
+    <div class="hero">
+      <div class="kicker">First night setup</div>
+      <h2>One list for the kids. A quiet checklist for you.</h2>
+      <p class="lede">Kids add what they want. You and your wife mark gifts claimed or bought. That status never shows on their side.</p>
+      <label>Family name</label>
+      <input id="familyName" placeholder="Carroll" maxlength="40" />
+      <label>Parent passcode</label>
+      <input id="parentPin" placeholder="A short code only you two know" maxlength="32" />
+      <label>Your names, comma separated</label>
+      <input id="parentNames" placeholder="Mom, Dad" maxlength="80" />
+      <label>Kids and grandkids, comma separated</label>
+      <input id="kidNames" placeholder="Names, separated by commas" maxlength="160" />
+      <p class="hint">Little ones don’t need to type. You can add wishes for them after setup.</p>
+      <div class="row" style="margin-top:16px">
+        <button class="btn-gold" id="createFamily">Create the list</button>
+      </div>
+    </div>
+  </section>
+
+  <section class="screen" id="home">
+    <div class="hero">
+      <div class="kicker" id="homeKicker">Christmas</div>
+      <h2 id="homeTitle">Who’s adding a wish?</h2>
+      <p class="lede">Kids only see wishes. Parents see who is getting what.</p>
+      <div class="kid-picks" id="kidPicks"></div>
+      <div class="row" style="margin-top:14px">
+        <button class="btn-gold" id="parentEntry">We’re the parents</button>
+      </div>
+    </div>
+  </section>
+
+  <section class="screen" id="kid">
+    <div class="hero">
+      <div class="kicker">Your list</div>
+      <h2 id="kidTitle">What do you want?</h2>
+      <p class="lede" id="kidLede">Add anything. A toy, a book, an experience, a size.</p>
+      <form id="wishForm">
+        <label>Wish</label>
+        <input id="wishTitle" required placeholder="LEGO castle, art set, zoo day…" maxlength="120" />
+        <label>Details</label>
+        <textarea id="wishDetails" placeholder="Color, size, which one, why you want it" maxlength="400"></textarea>
+        <div class="row">
+          <div>
+            <label>Link, if you have one</label>
+            <input id="wishLink" placeholder="https://" maxlength="300" />
+          </div>
+          <div>
+            <label>How much?</label>
+            <select id="wishPrio">
+              <option value="1">Nice to have</option>
+              <option value="2" selected>Really want</option>
+              <option value="3">Must have</option>
+            </select>
+          </div>
+        </div>
+        <div class="row" style="margin-top:14px">
+          <button class="btn-gold" type="submit">Add to my list</button>
+        </div>
+      </form>
+    </div>
+    <div id="kidWishes"></div>
+  </section>
+
+  <section class="screen" id="pin">
+    <div class="hero">
+      <div class="kicker">Parents</div>
+      <h2>Passcode</h2>
+      <p class="lede">Kids don’t get this view. Claims and checkmarks stay here.</p>
+      <label>Passcode</label>
+      <input id="pinInput" type="password" maxlength="32" />
+      <div class="row" style="margin-top:14px">
+        <button class="btn-gold" id="pinGo">Open the list</button>
+      </div>
+    </div>
+  </section>
+
+  <section class="screen" id="parent">
+    <div class="stats" id="stats"></div>
+    <div class="tabs no-print">
+      <button class="chip on" id="tabOpen">Still to buy</button>
+      <button class="chip" id="tabAll">Everything</button>
+      <button class="chip" id="tabShop">Shopping list</button>
+      <button class="chip" id="tabSet">Family</button>
+    </div>
+    <div id="parentBody"></div>
+  </section>
+</div>
+<div class="toast" id="toast"></div>
+<script>
+const KEY = "family-christmas-list-v1";
+const $ = (id) => document.getElementById(id);
+let state = load();
+let parentUnlocked = false;
+let activeKid = null;
+let parentTab = "open";
+
+function load() {
+  try { return JSON.parse(localStorage.getItem(KEY)) || null; }
+  catch { return null; }
+}
+function save() {
+  localStorage.setItem(KEY, JSON.stringify(state));
+}
+function uid() {
+  return Math.random().toString(36).slice(2, 10);
+}
+function toast(msg) {
+  const t = $("toast");
+  t.textContent = msg;
+  t.style.display = "block";
+  clearTimeout(toast._t);
+  toast._t = setTimeout(() => t.style.display = "none", 2200);
+}
+function show(id) {
+  document.querySelectorAll(".screen").forEach(s => s.classList.remove("on"));
+  $(id).classList.add("on");
+  $("homeBtn").hidden = id === "home" || id === "setup";
+}
+function prioLabel(n) {
+  return n === "3" || n === 3 ? "Must have" : n === "1" || n === 1 ? "Nice to have" : "Really want";
+}
+function kidName(id) {
+  return (state.kids.find(k => k.id === id) || {}).name || "Someone";
+}
+function esc(s) {
+  return String(s || "").replace(/[&<>"']/g, c => "&#" + c.charCodeAt(0) + ";");
+}
+
+function boot() {
+  if (!state) { show("setup"); return; }
+  $("brandName").textContent = state.familyName + " Christmas List";
+  $("brandSub").textContent = "Wishes in. Surprises kept.";
+  renderHome();
+  show("home");
+}
+
+$("createFamily").onclick = () => {
+  const familyName = $("familyName").value.trim() || "Our";
+  const parentPin = $("parentPin").value.trim();
+  const parents = $("parentNames").value.split(",").map(s => s.trim()).filter(Boolean);
+  const kids = $("kidNames").value.split(",").map(s => s.trim()).filter(Boolean);
+  if (!parentPin) return toast("Add a parent passcode");
+  if (parents.length < 1) return toast("Add at least one parent name");
+  if (kids.length < 1) return toast("Add at least one child");
+  state = {
+    familyName, parentPin, parents,
+    kids: kids.map(name => ({ id: uid(), name })),
+    wishes: []
+  };
+  save();
+  boot();
+};
+
+function renderHome() {
+  $("homeKicker").textContent = state.familyName;
+  $("kidPicks").innerHTML = state.kids.map(k =>
+    `<button class="pick" data-kid="${k.id}"><strong>${esc(k.name)}</strong><span>Add a wish</span></button>`
+  ).join("");
+  $("kidPicks").querySelectorAll("[data-kid]").forEach(btn => {
+    btn.onclick = () => openKid(btn.dataset.kid);
+  });
+}
+
+function openKid(id) {
+  activeKid = id;
+  parentUnlocked = false;
+  $("kidTitle").textContent = kidName(id) + "’s list";
+  $("wishForm").reset();
+  renderKid();
+  show("kid");
+}
+function renderKid() {
+  const mine = state.wishes.filter(w => w.kidId === activeKid && !w.secret);
+  $("kidWishes").innerHTML = mine.length ? mine.map(w => `
+    <article class="card">
+      <div class="wish-top">
+        <div>
+          <div class="prio ${w.priority == 3 ? "must" : ""}">${prioLabel(w.priority)}</div>
+          <h3>${esc(w.title)}</h3>
+        </div>
+        <button class="danger" data-del="${w.id}">Remove</button>
+      </div>
+      ${w.details ? `<div class="meta">${esc(w.details)}</div>` : ""}
+      ${w.link ? `<div class="meta"><a class="linkish" href="${esc(w.link)}" target="_blank" rel="noopener">Link</a></div>` : ""}
+    </article>`).join("") : `<div class="card empty">Nothing here yet. Add the first wish.</div>`;
+  $("kidWishes").querySelectorAll("[data-del]").forEach(btn => {
+    btn.onclick = () => {
+      state.wishes = state.wishes.filter(w => w.id !== btn.dataset.del);
+      save(); renderKid();
+    };
+  });
+}
+$("wishForm").onsubmit = (e) => {
+  e.preventDefault();
+  const title = $("wishTitle").value.trim();
+  if (!title) return;
+  state.wishes.unshift({
+    id: uid(), kidId: activeKid, title,
+    details: $("wishDetails").value.trim(),
+    link: $("wishLink").value.trim(),
+    priority: $("wishPrio").value,
+    secret: false,
+    claimedBy: "",
+    purchased: false,
+    price: "",
+    store: "",
+    adultNote: "",
+    updatedAt: Date.now()
+  });
+  save();
+  $("wishForm").reset();
+  renderKid();
+  toast("Added. The parents can see it.");
+};
+
+$("parentEntry").onclick = () => { $("pinInput").value = ""; show("pin"); };
+$("pinGo").onclick = () => {
+  if ($("pinInput").value.trim() !== state.parentPin) return toast("That passcode doesn’t match");
+  parentUnlocked = true;
+  parentTab = "open";
+  renderParent();
+  show("parent");
+};
+$("homeBtn").onclick = () => { parentUnlocked = false; activeKid = null; boot(); };
+
+function visibleWishes() {
+  if (parentTab === "open") return state.wishes.filter(w => !w.purchased);
+  return state.wishes;
+}
+function renderParent() {
+  document.querySelectorAll(".tabs .chip").forEach(b => b.classList.remove("on"));
+  $("tab" + parentTab[0].toUpperCase() + parentTab.slice(1)).classList.add("on");
+  const open = state.wishes.filter(w => !w.purchased).length;
+  const got = state.wishes.filter(w => w.purchased).length;
+  $("stats").innerHTML = `
+    <div class="stat"><b>${state.wishes.length}</b><span>Wishes</span></div>
+    <div class="stat"><b>${open}</b><span>Still open</span></div>
+    <div class="stat"><b>${got}</b><span>Got it</span></div>`;
+  if (parentTab === "set") return renderSettings();
+  if (parentTab === "shop") return renderShop();
+  const groups = state.kids.map(k => ({ kid: k, items: visibleWishes().filter(w => w.kidId === k.id) }));
+  $("parentBody").innerHTML = groups.map(g => `
+    <div class="section-label">${esc(g.kid.name)}</div>
+    ${g.items.length ? g.items.map(wishCard).join("") : `<div class="card empty">No ${parentTab === "open" ? "open " : ""}wishes.</div>`}
+    <button class="btn-ghost" data-addfor="${g.kid.id}" style="margin-top:8px">Add a wish for ${esc(g.kid.name)}</button>
+    <form class="card" data-addform="${g.kid.id}" hidden>
+      <label>Wish for ${esc(g.kid.name)}</label>
+      <input data-title="${g.kid.id}" placeholder="What they want" />
+      <label class="hint" style="display:flex;gap:8px;align-items:center;margin-top:10px">
+        <input type="checkbox" data-secret="${g.kid.id}" style="width:auto" /> Hide this from their list
+      </label>
+      <button class="btn-gold" type="submit" style="margin-top:10px">Save wish</button>
+    </form>
+  `).join("");
+  bindWishCards();
+}
+function wishCard(w) {
+  const claimChips = state.parents.map(p =>
+    `<button class="chip ${w.claimedBy === p ? "on" : ""}" data-claim="${w.id}" data-who="${esc(p)}">${esc(p)}</button>`
+  ).join("");
+  return `<article class="card">
+    <div class="wish-top">
+      <div>
+        <div class="prio ${w.priority == 3 ? "must" : ""}">${prioLabel(w.priority)}${w.secret ? " · just for us" : ""}</div>
+        <h3>${esc(w.title)}</h3>
+      </div>
+      <button class="chip ${w.purchased ? "got" : ""}" data-got="${w.id}">${w.purchased ? "Got it" : "Mark got it"}</button>
+    </div>
+    ${w.details ? `<div class="meta">${esc(w.details)}</div>` : ""}
+    ${w.link ? `<div class="meta"><a href="${esc(w.link)}" target="_blank" rel="noopener">Open link</a></div>` : ""}
+    <div class="chips">${claimChips}<button class="chip" data-clear="${w.id}">Clear claim</button></div>
+    <div class="row">
+      <input data-field="store" data-id="${w.id}" placeholder="Store" value="${esc(w.store)}" />
+      <input data-field="price" data-id="${w.id}" placeholder="Price" value="${esc(w.price)}" />
+    </div>
+    <input data-field="adultNote" data-id="${w.id}" placeholder="Note only you two see" value="${esc(w.adultNote)}" style="margin-top:8px" />
+    <div class="hidden-note">${w.secret ? "Hidden from their list." : "They still see this wish. They cannot see claims, notes, or checkmarks."}</div>
+  </article>`;
+}
+function bindWishCards() {
+  $("parentBody").querySelectorAll("[data-got]").forEach(btn => btn.onclick = () => {
+    const w = state.wishes.find(x => x.id === btn.dataset.got);
+    w.purchased = !w.purchased;
+    w.updatedAt = Date.now();
+    save(); renderParent();
+  });
+  $("parentBody").querySelectorAll("[data-claim]").forEach(btn => btn.onclick = () => {
+    const w = state.wishes.find(x => x.id === btn.dataset.claim);
+    w.claimedBy = btn.dataset.who;
+    w.updatedAt = Date.now();
+    save(); renderParent();
+  });
+  $("parentBody").querySelectorAll("[data-clear]").forEach(btn => btn.onclick = () => {
+    const w = state.wishes.find(x => x.id === btn.dataset.clear);
+    w.claimedBy = "";
+    save(); renderParent();
+  });
+  $("parentBody").querySelectorAll("[data-field]").forEach(input => {
+    input.onchange = () => {
+      const w = state.wishes.find(x => x.id === input.dataset.id);
+      w[input.dataset.field] = input.value.trim();
+      w.updatedAt = Date.now();
+      save();
+    };
+  });
+  $("parentBody").querySelectorAll("[data-addfor]").forEach(btn => btn.onclick = () => {
+    const form = $("parentBody").querySelector(`[data-addform="${btn.dataset.addfor}"]`);
+    form.hidden = !form.hidden;
+  });
+  $("parentBody").querySelectorAll("[data-addform]").forEach(form => form.onsubmit = (e) => {
+    e.preventDefault();
+    const kidId = form.dataset.addform;
+    const title = form.querySelector("[data-title]").value.trim();
+    if (!title) return;
+    state.wishes.unshift({
+      id: uid(), kidId, title, details: "", link: "", priority: "2",
+      secret: form.querySelector("[data-secret]").checked,
+      claimedBy: "", purchased: false, price: "", store: "", adultNote: "", updatedAt: Date.now()
+    });
+    save(); renderParent();
+  });
+}
+function addFor() {}
+function renderShop() {
+  const items = state.wishes.filter(w => !w.purchased);
+  $("parentBody").innerHTML = items.length ? items.map(w => `
+    <article class="card">
+      <strong>${esc(w.title)}</strong>
+      <div class="meta">${esc(kidName(w.kidId))}${w.claimedBy ? " · " + esc(w.claimedBy) : " · unclaimed"}${w.store ? " · " + esc(w.store) : ""}${w.price ? " · " + esc(w.price) : ""}</div>
+      ${w.adultNote ? `<div class="meta">${esc(w.adultNote)}</div>` : ""}
+    </article>`).join("") + `<button class="btn" style="margin-top:12px" onclick="window.print()">Print</button>`
+    : `<div class="card empty">Nothing left to buy.</div>`;
+}
+function renderSettings() {
+  $("parentBody").innerHTML = `
+    <div class="card">
+      <h3>Share between phones</h3>
+      <p class="meta">This list lives in this browser. Copy a backup, send it to each other, then paste it on the other phone. Newer edits win.</p>
+      <div class="row" style="margin-top:10px">
+        <button class="btn-gold" id="copyBackup">Copy backup</button>
+        <button class="btn" id="pasteBackup">Paste backup</button>
+      </div>
+      <textarea id="backupBox" placeholder="Backup appears here" style="margin-top:10px"></textarea>
+    </div>
+    <div class="card">
+      <h3>Add a child</h3>
+      <div class="row">
+        <input id="newKid" placeholder="Name" />
+        <button class="btn-gold" id="addKid">Add</button>
+      </div>
+    </div>
+    <div class="card">
+      <button class="danger" id="resetAll">Erase this list on this phone</button>
+    </div>`;
+  $("copyBackup").onclick = async () => {
+    const text = btoa(unescape(encodeURIComponent(JSON.stringify(state))));
+    $("backupBox").value = text;
+    try { await navigator.clipboard.writeText(text); toast("Backup copied"); }
+    catch { toast("Backup is in the box. Copy it."); }
+  };
+  $("pasteBackup").onclick = () => {
+    const raw = $("backupBox").value.trim();
+    if (!raw) return toast("Paste a backup first");
+    try {
+      const incoming = JSON.parse(decodeURIComponent(escape(atob(raw))));
+      merge(incoming);
+      toast("Lists merged");
+      boot();
+      parentUnlocked = true;
+      show("parent");
+      renderParent();
+    } catch { toast("That backup could not be read"); }
+  };
+  $("addKid").onclick = () => {
+    const name = $("newKid").value.trim();
+    if (!name) return;
+    state.kids.push({ id: uid(), name });
+    save(); renderParent();
+  };
+  $("resetAll").onclick = () => {
+    if (!confirm("Erase the family list on this phone?")) return;
+    localStorage.removeItem(KEY);
+    state = null; parentUnlocked = false;
+    boot();
+  };
+}
+function merge(incoming) {
+  const byId = new Map(state.wishes.map(w => [w.id, w]));
+  incoming.wishes.forEach(w => {
+    const old = byId.get(w.id);
+    if (!old || (w.updatedAt || 0) >= (old.updatedAt || 0)) byId.set(w.id, w);
+  });
+  const kids = new Map(state.kids.map(k => [k.id, k]));
+  (incoming.kids || []).forEach(k => kids.set(k.id, k));
+  state.wishes = [...byId.values()].sort((a,b) => (b.updatedAt||0) - (a.updatedAt||0));
+  state.kids = [...kids.values()];
+  if (incoming.parents) state.parents = incoming.parents;
+  save();
+}
+["open","all","shop","set"].forEach(tab => {
+  $("tab" + tab[0].toUpperCase() + tab.slice(1)).onclick = () => {
+    if (!parentUnlocked) return;
+    parentTab = tab; renderParent();
+  };
+});
+boot();
+</script>
+</body>
+</html>
