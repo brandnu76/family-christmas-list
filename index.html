@@ -3,24 +3,35 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-<meta name="theme-color" content="#121a16" />
+<meta name="theme-color" content="#6e1c24" />
 <title>Family Christmas List</title>
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,620&family=Outfit:wght@370;500;650&display=swap" rel="stylesheet" />
 <style>
   :root {
-    --bg: #101712; --card: #1c2822; --card-2: #24312a;
-    --line: rgba(212, 180, 131, 0.28); --gold: #e0c48a; --gold-dim: #b89a62;
-    --ink: #f6f1e7; --muted: #b3a794; --rose: #e07a68; --pine: #8fbf9a;
-    --shadow: 0 18px 40px rgba(0,0,0,.28); --radius: 18px;
+    --bg: #14080c;
+    --card: #2a1218;
+    --card-2: #3a1a22;
+    --line: rgba(232, 196, 122, 0.35);
+    --gold: #f0d48a;
+    --gold-dim: #c9a15a;
+    --ink: #fff6ea;
+    --muted: #e4c8b4;
+    --rose: #ff6b6b;
+    --pine: #7dcea0;
+    --holly: #1f6b45;
+    --shadow: 0 18px 40px rgba(0,0,0,.35);
+    --radius: 18px;
   }
   * { box-sizing: border-box; }
   html, body { margin: 0; padding: 0; }
   body {
     min-height: 100vh; font-family: Outfit, system-ui, sans-serif; color: var(--ink);
     background:
-      radial-gradient(900px 420px at 50% -10%, rgba(224,196,138,.16), transparent 60%),
+      radial-gradient(700px 320px at 15% -10%, rgba(196, 42, 58, .45), transparent 60%),
+      radial-gradient(640px 340px at 100% 0%, rgba(31, 107, 69, .4), transparent 55%),
+      radial-gradient(800px 420px at 50% 120%, rgba(240, 212, 138, .12), transparent 50%),
       var(--bg);
   }
   button, input, textarea, select { font: inherit; color: inherit; }
@@ -31,8 +42,9 @@
   .brand { display: flex; align-items: center; gap: 12px; }
   .mark {
     width: 42px; height: 42px; border-radius: 50%; display: grid; place-items: center;
-    background: radial-gradient(circle at 35% 30%, #f3e2bc, #c4a15a 55%, #6d5428);
-    color: #1a140c; font-family: Fraunces, serif; font-weight: 620;
+    background: radial-gradient(circle at 35% 30%, #fff1c9, #e8b4b8 28%, #b4232f 62%, #1f6b45);
+    color: #fff8ee; font-family: Fraunces, serif; font-weight: 620;
+    box-shadow: inset 0 0 0 2px rgba(255,255,255,.28);
   }
   h1, h2, h3 { font-family: Fraunces, Georgia, serif; font-weight: 620; letter-spacing: -0.02em; margin: 0; }
   .brand h1 { font-size: 22px; line-height: 1; }
@@ -49,7 +61,7 @@
   .lede { margin: 0 0 14px; }
   .kid-picks { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
   .pick, .btn, .btn-ghost, .btn-gold, .chip, .icon-btn {
-    border-radius: 14px; border: 1px solid var(--line); background: #24312a; color: var(--ink);
+    border-radius: 14px; border: 1px solid var(--line); background: #4a1c26; color: var(--ink);
   }
   .pick, .btn, .btn-ghost, .btn-gold { padding: 14px; }
   .pick { text-align: left; }
@@ -62,15 +74,19 @@
   .row > * { flex: 1; }
   label { display: block; font-size: 13px; color: var(--muted); margin: 12px 0 6px; }
   input, textarea, select {
-    width: 100%; background: #121a16; border: 1px solid var(--line); border-radius: 12px; padding: 12px; outline: none;
+    width: 100%; background: #1a0c10; border: 1px solid var(--line); border-radius: 12px; padding: 12px; outline: none;
   }
   textarea { min-height: 74px; resize: vertical; }
   .wish-top { display: flex; justify-content: space-between; gap: 8px; align-items: flex-start; }
   .prio { font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: var(--gold); }
   .prio.must { color: var(--rose); }
   .chips { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 10px; }
-  .chip.on { background: rgba(224,196,138,.16); border-color: var(--gold-dim); color: var(--gold); }
-  .chip.got { background: rgba(143,191,154,.16); border-color: #6ea67a; color: var(--pine); }
+  .chip.on { background: rgba(240,212,138,.2); border-color: var(--gold); color: var(--gold); }
+  .chip.got { background: rgba(31,107,69,.55); border-color: #8fd0a8; color: #d9ffe8; }
+  .chip.over { background: rgba(180,35,47,.45); border-color: var(--rose); color: #ffd0d0; }
+  .bar { height: 8px; border-radius: 99px; background: rgba(255,255,255,.08); margin-top: 8px; overflow: hidden; }
+  .bar span { display: block; height: 100%; background: linear-gradient(90deg, #1f6b45, #f0d48a); }
+  .bar.over span { background: linear-gradient(90deg, #b4232f, #ff8a80); }
   .stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 12px; }
   .stat { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 12px; }
   .stat b { display: block; font-family: Fraunces, serif; font-size: 22px; }
@@ -128,7 +144,8 @@
       <label>Your names, comma separated</label>
       <input id="parentNames" placeholder="Mom, Dad" maxlength="80" />
       <label>Kids and grandkids, comma separated</label>
-      <input id="kidNames" placeholder="Names, separated by commas" maxlength="160" />
+      <input id="kidNames" value="Devin, Jeremiah, Marissa, jazz-min, Zaria, Taitum, Summer, Skyler, Whitlee" maxlength="200" />
+      <p class="hint">Budgets: Devin, Jeremiah, and Marissa $300. jazz-min and Zaria $200. Taitum, Summer, Skyler, and Whitlee $150. Assigned $1,900 of the $2,000 cap, so $100 is unassigned.</p>
       <div class="row" style="margin-top:16px">
         <button class="btn-gold" id="createFamily">Create the list</button>
       </div>
@@ -209,6 +226,12 @@ const OWNER = "brandnu76";
 const DATA_REPO = "family-christmas-list-data";
 const DATA_PATH = "list.json";
 const TOKEN_KEY = "family-christmas-token";
+const TOTAL_BUDGET = 2000;
+const BUDGETS = {
+  devin: 300, jeremiah: 300, marissa: 300,
+  "jazz-min": 200, zaria: 200,
+  taitum: 150, summer: 150, skyler: 150, whitlee: 150
+};
 const $ = (id) => document.getElementById(id);
 
 let token = localStorage.getItem(TOKEN_KEY) || "";
@@ -236,7 +259,25 @@ function show(id) {
   $("homeBtn").hidden = id === "home" || id === "join" || id === "setup";
 }
 function prioLabel(n) { return Number(n) === 3 ? "Must have" : Number(n) === 1 ? "Nice to have" : "Really want"; }
-function kidName(id) { return (remote.kids.find(k => k.id === id) || {}).name || "Someone"; }
+function money(v) {
+  const n = Number(String(v || "").replace(/[^0-9.]/g, ""));
+  return Number.isFinite(n) ? n : 0;
+}
+function dollars(n) { return "$" + Math.round(n).toLocaleString("en-US"); }
+function budgetFor(kid) {
+  if (kid && kid.budget) return kid.budget;
+  return BUDGETS[(kid.name || "").toLowerCase()] || 0;
+}
+function kidSpend(kidId) {
+  const all = remote.wishes.concat(statusBag.hidden || []);
+  return all.filter(w => w.kidId === kidId).reduce((sum, w) => {
+    const st = itemStatus(w.id);
+    return {
+      spent: sum.spent + (st.purchased ? money(st.price) : 0),
+      planned: sum.planned + (!st.purchased ? money(st.price) : 0)
+    };
+  }, { spent: 0, planned: 0 });
+}
 function b64(bytes) { return btoa(String.fromCharCode(...bytes)); }
 function unb64(text) { return Uint8Array.from(atob(text), c => c.charCodeAt(0)); }
 
@@ -346,7 +387,7 @@ $("createFamily").onclick = () => withStore(async () => {
   statusBag = { items: {}, hidden: [] };
   remote = {
     familyName, parents,
-    kids: kids.map(name => ({ id: uid(), name })),
+    kids: kids.map(name => ({ id: uid(), name, budget: BUDGETS[name.toLowerCase()] || 0 })),
     wishes: [],
     status: await encryptStatus(statusBag, pin)
   };
@@ -441,12 +482,23 @@ function renderParent() {
   $("tab" + parentTab[0].toUpperCase() + parentTab.slice(1)).classList.add("on");
   const all = remote.wishes.concat(statusBag.hidden || []);
   const got = all.filter(w => itemStatus(w.id).purchased).length;
-  $("stats").innerHTML = `<div class="stat"><b>${all.length}</b><span>Wishes</span></div><div class="stat"><b>${all.length - got}</b><span>Still open</span></div><div class="stat"><b>${got}</b><span>Got it</span></div>`;
+  const spent = all.reduce((sum, w) => sum + (itemStatus(w.id).purchased ? money(itemStatus(w.id).price) : 0), 0);
+  const planned = all.reduce((sum, w) => sum + (!itemStatus(w.id).purchased ? money(itemStatus(w.id).price) : 0), 0);
+  const left = TOTAL_BUDGET - spent - planned;
+  $("stats").innerHTML = `<div class="stat"><b>${dollars(TOTAL_BUDGET)}</b><span>Budget</span></div><div class="stat"><b>${dollars(spent)}</b><span>Bought</span></div><div class="stat"><b class="${left < 0 ? "prio must" : ""}">${dollars(left)}</b><span>Left after planned</span></div>`;
   if (parentTab === "set") return renderSettings();
   if (parentTab === "shop") return renderShop();
-  $("parentBody").innerHTML = remote.kids.map(k => {
+  $("parentBody").innerHTML = `<p class="hint">Assigned ${dollars(1900)} across the nine lists. ${dollars(100)} of the cap is unassigned. Kids do not see these numbers.</p>` + remote.kids.map(k => {
     const items = visibleParentWishes().filter(w => w.kidId === k.id);
-    return `<div class="section-label">${esc(k.name)}</div>
+    const cap = budgetFor(k);
+    const use = kidSpend(k.id);
+    const remain = cap - use.spent - use.planned;
+    const over = remain < 0;
+    return `<div class="section-label">${esc(k.name)} · ${dollars(cap)}</div>
+      <div class="card">
+        <div class="meta">${dollars(use.spent)} bought · ${dollars(use.planned)} planned · ${dollars(remain)} left</div>
+        <div class="bar ${over ? "over" : ""}"><span style="width:${Math.min(100, cap ? ((use.spent + use.planned) / cap) * 100 : 0)}%"></span></div>
+      </div>
       ${items.length ? items.map(wishCard).join("") : `<div class="card empty">No ${parentTab === "open" ? "open " : ""}wishes.</div>`}
       <button class="btn-ghost" data-addfor="${k.id}" style="margin-top:8px">Add a wish for ${esc(k.name)}</button>
       <form class="card" data-addform="${k.id}" hidden>
