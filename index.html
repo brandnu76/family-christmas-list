@@ -10,129 +10,83 @@
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,620&family=Outfit:wght@370;500;650&display=swap" rel="stylesheet" />
 <style>
   :root {
-    --bg: #101712;
-    --bg-2: #18211c;
-    --card: #1c2822;
-    --card-2: #24312a;
-    --line: rgba(212, 180, 131, 0.28);
-    --gold: #e0c48a;
-    --gold-dim: #b89a62;
-    --ink: #f6f1e7;
-    --muted: #b3a794;
-    --faint: #7f7466;
-    --rose: #e07a68;
-    --pine: #8fbf9a;
-    --danger: #e07a68;
-    --shadow: 0 18px 40px rgba(0,0,0,.28);
-    --radius: 18px;
+    --bg: #101712; --card: #1c2822; --card-2: #24312a;
+    --line: rgba(212, 180, 131, 0.28); --gold: #e0c48a; --gold-dim: #b89a62;
+    --ink: #f6f1e7; --muted: #b3a794; --rose: #e07a68; --pine: #8fbf9a;
+    --shadow: 0 18px 40px rgba(0,0,0,.28); --radius: 18px;
   }
   * { box-sizing: border-box; }
   html, body { margin: 0; padding: 0; }
   body {
-    min-height: 100vh;
-    font-family: Outfit, system-ui, sans-serif;
-    color: var(--ink);
+    min-height: 100vh; font-family: Outfit, system-ui, sans-serif; color: var(--ink);
     background:
       radial-gradient(900px 420px at 50% -10%, rgba(224,196,138,.16), transparent 60%),
-      radial-gradient(700px 380px at 100% 100%, rgba(143,191,154,.08), transparent 50%),
       var(--bg);
   }
   button, input, textarea, select { font: inherit; color: inherit; }
   button { cursor: pointer; }
   a { color: var(--gold); }
   .wrap { width: min(920px, calc(100% - 28px)); margin: 0 auto; padding: 22px 0 64px; }
-  header.top {
-    display: flex; align-items: center; justify-content: space-between; gap: 12px;
-    margin-bottom: 22px;
-  }
+  header.top { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 22px; }
   .brand { display: flex; align-items: center; gap: 12px; }
   .mark {
-    width: 42px; height: 42px; border-radius: 50%;
-    display: grid; place-items: center;
+    width: 42px; height: 42px; border-radius: 50%; display: grid; place-items: center;
     background: radial-gradient(circle at 35% 30%, #f3e2bc, #c4a15a 55%, #6d5428);
-    color: #1a140c; font-family: Fraunces, serif; font-weight: 620; font-size: 18px;
-    box-shadow: inset 0 0 0 2px rgba(255,255,255,.25);
+    color: #1a140c; font-family: Fraunces, serif; font-weight: 620;
   }
   h1, h2, h3 { font-family: Fraunces, Georgia, serif; font-weight: 620; letter-spacing: -0.02em; margin: 0; }
   .brand h1 { font-size: 22px; line-height: 1; }
   .brand p { margin: 3px 0 0; color: var(--muted); font-size: 13px; }
   .screen { display: none; }
   .screen.on { display: block; }
-  .hero {
-    background: linear-gradient(180deg, rgba(224,196,138,.08), transparent 70%), var(--card);
-    border: 1px solid var(--line);
-    border-radius: 24px;
-    padding: 22px;
-    box-shadow: var(--shadow);
+  .hero, .card {
+    background: var(--card); border: 1px solid var(--line); border-radius: 24px; padding: 18px;
   }
+  .card { border-radius: var(--radius); margin-top: 10px; }
   .kicker { color: var(--gold); letter-spacing: .16em; text-transform: uppercase; font-size: 11px; font-weight: 650; }
-  .hero h2 { font-size: 34px; margin: 8px 0 8px; line-height: 1.05; }
-  .lede { color: var(--muted); margin: 0 0 18px; line-height: 1.45; }
-  .grid { display: grid; gap: 12px; }
+  .hero h2 { font-size: 32px; margin: 8px 0; line-height: 1.05; }
+  .lede, .meta, .hint { color: var(--muted); line-height: 1.45; }
+  .lede { margin: 0 0 14px; }
   .kid-picks { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-  .pick, .btn, .btn-ghost, .btn-gold {
-    border-radius: 14px; border: 1px solid var(--line); background: var(--card-2);
-    padding: 14px 14px; text-align: left;
+  .pick, .btn, .btn-ghost, .btn-gold, .chip, .icon-btn {
+    border-radius: 14px; border: 1px solid var(--line); background: #24312a; color: var(--ink);
   }
-  .pick strong { display: block; font-size: 16px; }
-  .pick span, .hint { color: var(--muted); font-size: 12px; }
-  .btn, .btn-gold, .btn-ghost {
-    text-align: center; font-weight: 650;
-  }
+  .pick, .btn, .btn-ghost, .btn-gold { padding: 14px; }
+  .pick { text-align: left; }
+  .pick strong { display: block; }
+  .btn, .btn-gold, .btn-ghost, .chip { text-align: center; font-weight: 650; }
   .btn-gold { background: linear-gradient(180deg, #f0d7a4, #c9a56a); color: #241b10; border-color: transparent; }
-  .btn-ghost { background: transparent; }
+  .btn-ghost, .icon-btn { background: transparent; }
+  .icon-btn, .chip { padding: 8px 12px; font-size: 13px; }
   .row { display: flex; gap: 8px; flex-wrap: wrap; }
   .row > * { flex: 1; }
   label { display: block; font-size: 13px; color: var(--muted); margin: 12px 0 6px; }
   input, textarea, select {
-    width: 100%; background: #121a16; border: 1px solid var(--line); border-radius: 12px;
-    padding: 12px 12px; outline: none;
+    width: 100%; background: #121a16; border: 1px solid var(--line); border-radius: 12px; padding: 12px; outline: none;
   }
   textarea { min-height: 74px; resize: vertical; }
-  input:focus, textarea:focus, select:focus { border-color: var(--gold-dim); }
-  .card {
-    background: var(--card); border: 1px solid var(--line); border-radius: var(--radius);
-    padding: 14px; margin-top: 10px;
-  }
   .wish-top { display: flex; justify-content: space-between; gap: 8px; align-items: flex-start; }
   .prio { font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: var(--gold); }
   .prio.must { color: var(--rose); }
-  .meta { color: var(--muted); font-size: 13px; margin-top: 4px; line-height: 1.4; }
   .chips { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 10px; }
-  .chip {
-    border: 1px solid var(--line); border-radius: 999px; padding: 6px 10px; font-size: 12px; background: transparent; color: var(--ink);
-  }
   .chip.on { background: rgba(224,196,138,.16); border-color: var(--gold-dim); color: var(--gold); }
   .chip.got { background: rgba(143,191,154,.16); border-color: #6ea67a; color: var(--pine); }
-  .stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin: 14px 0; }
+  .stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 12px; }
   .stat { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 12px; }
   .stat b { display: block; font-family: Fraunces, serif; font-size: 22px; }
   .stat span { color: var(--muted); font-size: 12px; }
   .hidden-note { color: var(--pine); font-size: 12px; margin-top: 8px; }
-  .danger { color: var(--danger); background: transparent; border: none; padding: 0; font-size: 13px; }
-  .top-actions { display: flex; gap: 8px; }
-  .icon-btn {
-    border: 1px solid var(--line); background: transparent; border-radius: 999px; padding: 8px 12px; font-size: 13px;
-  }
-  .tabs { display: flex; gap: 6px; margin: 12px 0; }
+  .danger { color: var(--rose); background: transparent; border: none; padding: 0; }
+  .tabs { display: flex; gap: 6px; margin: 8px 0 12px; }
   .tabs button { flex: 1; }
-  .empty { color: var(--muted); text-align: center; padding: 22px 8px; }
+  .empty { text-align: center; color: var(--muted); padding: 18px 8px; }
   .toast {
     position: fixed; left: 50%; bottom: 18px; transform: translateX(-50%);
     background: #f6f1e7; color: #1a140c; padding: 10px 14px; border-radius: 999px;
-    font-size: 13px; font-weight: 650; display: none; z-index: 5;
+    font-size: 13px; font-weight: 650; display: none; z-index: 5; max-width: 90vw;
   }
   .section-label { margin: 18px 0 0; color: var(--gold); font-size: 13px; letter-spacing: .08em; text-transform: uppercase; }
-  .linkish { color: var(--gold); word-break: break-all; font-size: 13px; }
-  @media (min-width: 800px) {
-    .kid-picks { grid-template-columns: repeat(3, 1fr); }
-    .parent-layout { display: grid; grid-template-columns: 280px 1fr; gap: 16px; align-items: start; }
-  }
-  @media print {
-    body { background: white; color: black; }
-    .no-print { display: none !important; }
-    .card, .stat, .hero { box-shadow: none; }
-  }
+  @media print { .no-print { display: none !important; } body { background: white; color: black; } }
 </style>
 </head>
 <body>
@@ -142,28 +96,39 @@
       <div class="mark">✦</div>
       <div>
         <h1 id="brandName">Family Christmas List</h1>
-        <p id="brandSub">Wishes in. Surprises kept.</p>
+        <p id="brandSub">Private store. Surprises kept.</p>
       </div>
     </div>
-    <div class="top-actions no-print">
-      <button class="icon-btn" id="homeBtn" hidden>Home</button>
-    </div>
+    <button class="icon-btn no-print" id="homeBtn" hidden>Home</button>
   </header>
+
+  <section class="screen" id="join">
+    <div class="hero">
+      <div class="kicker">Private store</div>
+      <h2>Connect this phone</h2>
+      <p class="lede">The list lives in a private GitHub repo, not the public site. Paste the store key once on each phone.</p>
+      <label>Store key</label>
+      <input id="tokenInput" type="password" placeholder="github_pat_..." autocomplete="off" />
+      <p class="hint">Parents: create one key for the private data repo only, then text it to the phones that should use the list. Kids never see bought items, even with this key.</p>
+      <div class="row" style="margin-top:14px">
+        <button class="btn-gold" id="connectBtn">Connect</button>
+      </div>
+    </div>
+  </section>
 
   <section class="screen" id="setup">
     <div class="hero">
-      <div class="kicker">First night setup</div>
-      <h2>One list for the kids. A quiet checklist for you.</h2>
-      <p class="lede">Kids add what they want. You and your wife mark gifts claimed or bought. That status never shows on their side.</p>
+      <div class="kicker">First night</div>
+      <h2>Create the family list</h2>
+      <p class="lede">This writes the list into the private repo. Bought and claimed stay encrypted with your passcode.</p>
       <label>Family name</label>
-      <input id="familyName" placeholder="Carroll" maxlength="40" />
+      <input id="familyName" maxlength="40" />
       <label>Parent passcode</label>
-      <input id="parentPin" placeholder="A short code only you two know" maxlength="32" />
+      <input id="parentPin" maxlength="32" />
       <label>Your names, comma separated</label>
       <input id="parentNames" placeholder="Mom, Dad" maxlength="80" />
       <label>Kids and grandkids, comma separated</label>
       <input id="kidNames" placeholder="Names, separated by commas" maxlength="160" />
-      <p class="hint">Little ones don’t need to type. You can add wishes for them after setup.</p>
       <div class="row" style="margin-top:16px">
         <button class="btn-gold" id="createFamily">Create the list</button>
       </div>
@@ -173,11 +138,12 @@
   <section class="screen" id="home">
     <div class="hero">
       <div class="kicker" id="homeKicker">Christmas</div>
-      <h2 id="homeTitle">Who’s adding a wish?</h2>
-      <p class="lede">Kids only see wishes. Parents see who is getting what.</p>
+      <h2>Who’s adding a wish?</h2>
+      <p class="lede">A new wish shows up on the other phones. Bought stays on the parent side.</p>
       <div class="kid-picks" id="kidPicks"></div>
       <div class="row" style="margin-top:14px">
         <button class="btn-gold" id="parentEntry">We’re the parents</button>
+        <button class="btn" id="refreshBtn">Refresh</button>
       </div>
     </div>
   </section>
@@ -186,16 +152,15 @@
     <div class="hero">
       <div class="kicker">Your list</div>
       <h2 id="kidTitle">What do you want?</h2>
-      <p class="lede" id="kidLede">Add anything. A toy, a book, an experience, a size.</p>
       <form id="wishForm">
         <label>Wish</label>
-        <input id="wishTitle" required placeholder="LEGO castle, art set, zoo day…" maxlength="120" />
+        <input id="wishTitle" required maxlength="120" placeholder="LEGO castle, art set, zoo day…" />
         <label>Details</label>
-        <textarea id="wishDetails" placeholder="Color, size, which one, why you want it" maxlength="400"></textarea>
+        <textarea id="wishDetails" maxlength="400" placeholder="Color, size, which one"></textarea>
         <div class="row">
           <div>
-            <label>Link, if you have one</label>
-            <input id="wishLink" placeholder="https://" maxlength="300" />
+            <label>Link</label>
+            <input id="wishLink" maxlength="300" placeholder="https://" />
           </div>
           <div>
             <label>How much?</label>
@@ -218,7 +183,7 @@
     <div class="hero">
       <div class="kicker">Parents</div>
       <h2>Passcode</h2>
-      <p class="lede">Kids don’t get this view. Claims and checkmarks stay here.</p>
+      <p class="lede">This unlocks claims and checkmarks. The kids’ page cannot open them.</p>
       <label>Passcode</label>
       <input id="pinInput" type="password" maxlength="32" />
       <div class="row" style="margin-top:14px">
@@ -240,222 +205,308 @@
 </div>
 <div class="toast" id="toast"></div>
 <script>
-const KEY = "family-christmas-list-v1";
+const OWNER = "brandnu76";
+const DATA_REPO = "family-christmas-list-data";
+const DATA_PATH = "list.json";
+const TOKEN_KEY = "family-christmas-token";
 const $ = (id) => document.getElementById(id);
-let state = load();
+
+let token = localStorage.getItem(TOKEN_KEY) || "";
+let remote = null;
+let sha = null;
+let statusBag = { items: {}, hidden: [] };
+let parentPin = sessionStorage.getItem("family-christmas-pin") || "";
 let parentUnlocked = false;
 let activeKid = null;
 let parentTab = "open";
+let busy = false;
 
-function load() {
-  try { return JSON.parse(localStorage.getItem(KEY)) || null; }
-  catch { return null; }
-}
-function save() {
-  localStorage.setItem(KEY, JSON.stringify(state));
-}
-function uid() {
-  return Math.random().toString(36).slice(2, 10);
-}
 function toast(msg) {
   const t = $("toast");
   t.textContent = msg;
   t.style.display = "block";
   clearTimeout(toast._t);
-  toast._t = setTimeout(() => t.style.display = "none", 2200);
+  toast._t = setTimeout(() => { t.style.display = "none"; }, 2400);
 }
+function uid() { return Math.random().toString(36).slice(2, 10); }
+function esc(s) { return String(s || "").replace(/[&<>"']/g, c => "&#" + c.charCodeAt(0) + ";"); }
 function show(id) {
   document.querySelectorAll(".screen").forEach(s => s.classList.remove("on"));
   $(id).classList.add("on");
-  $("homeBtn").hidden = id === "home" || id === "setup";
+  $("homeBtn").hidden = id === "home" || id === "join" || id === "setup";
 }
-function prioLabel(n) {
-  return n === "3" || n === 3 ? "Must have" : n === "1" || n === 1 ? "Nice to have" : "Really want";
-}
-function kidName(id) {
-  return (state.kids.find(k => k.id === id) || {}).name || "Someone";
-}
-function esc(s) {
-  return String(s || "").replace(/[&<>"']/g, c => "&#" + c.charCodeAt(0) + ";");
-}
+function prioLabel(n) { return Number(n) === 3 ? "Must have" : Number(n) === 1 ? "Nice to have" : "Really want"; }
+function kidName(id) { return (remote.kids.find(k => k.id === id) || {}).name || "Someone"; }
+function b64(bytes) { return btoa(String.fromCharCode(...bytes)); }
+function unb64(text) { return Uint8Array.from(atob(text), c => c.charCodeAt(0)); }
 
-function boot() {
-  if (!state) { show("setup"); return; }
-  $("brandName").textContent = state.familyName + " Christmas List";
-  $("brandSub").textContent = "Wishes in. Surprises kept.";
-  renderHome();
-  show("home");
+async function derive(pin, salt) {
+  const base = await crypto.subtle.importKey("raw", new TextEncoder().encode(pin), "PBKDF2", false, ["deriveKey"]);
+  return crypto.subtle.deriveKey(
+    { name: "PBKDF2", salt, iterations: 120000, hash: "SHA-256" },
+    base,
+    { name: "AES-GCM", length: 256 },
+    false,
+    ["encrypt", "decrypt"]
+  );
 }
-
-$("createFamily").onclick = () => {
-  const familyName = $("familyName").value.trim() || "Our";
-  const parentPin = $("parentPin").value.trim();
-  const parents = $("parentNames").value.split(",").map(s => s.trim()).filter(Boolean);
-  const kids = $("kidNames").value.split(",").map(s => s.trim()).filter(Boolean);
-  if (!parentPin) return toast("Add a parent passcode");
-  if (parents.length < 1) return toast("Add at least one parent name");
-  if (kids.length < 1) return toast("Add at least one child");
-  state = {
-    familyName, parentPin, parents,
-    kids: kids.map(name => ({ id: uid(), name })),
-    wishes: []
+async function encryptStatus(obj, pin) {
+  const salt = crypto.getRandomValues(new Uint8Array(16));
+  const iv = crypto.getRandomValues(new Uint8Array(12));
+  const key = await derive(pin, salt);
+  const buf = await crypto.subtle.encrypt({ name: "AES-GCM", iv }, key, new TextEncoder().encode(JSON.stringify(obj)));
+  return { salt: b64(salt), iv: b64(iv), data: b64(new Uint8Array(buf)) };
+}
+async function decryptStatus(box, pin) {
+  const key = await derive(pin, unb64(box.salt));
+  const buf = await crypto.subtle.decrypt({ name: "AES-GCM", iv: unb64(box.iv) }, key, unb64(box.data));
+  return JSON.parse(new TextDecoder().decode(buf));
+}
+async function gh(method, path, body) {
+  const res = await fetch("https://api.github.com" + path, {
+    method,
+    headers: {
+      Authorization: "Bearer " + token,
+      Accept: "application/vnd.github+json",
+      "Content-Type": "application/json",
+      "X-GitHub-Api-Version": "2022-11-28"
+    },
+    body: body ? JSON.stringify(body) : undefined
+  });
+  const text = await res.text();
+  let data = null;
+  try { data = text ? JSON.parse(text) : null; } catch { data = { message: text }; }
+  if (!res.ok) throw new Error((data && data.message) || "Store request failed");
+  return data;
+}
+function publicView() {
+  return {
+    familyName: remote.familyName,
+    parents: remote.parents,
+    kids: remote.kids,
+    wishes: remote.wishes,
+    status: remote.status
   };
-  save();
-  boot();
-};
+}
+async function loadRemote() {
+  const file = await gh("GET", `/repos/${OWNER}/${DATA_REPO}/contents/${DATA_PATH}?ref=main`);
+  sha = file.sha;
+  remote = JSON.parse(new TextDecoder().decode(unb64(file.content.replace(/\n/g, ""))));
+  if (parentPin && remote.status) {
+    try { statusBag = await decryptStatus(remote.status, parentPin); parentUnlocked = true; }
+    catch { parentUnlocked = false; }
+  }
+}
+async function saveRemote() {
+  if (parentPin) remote.status = await encryptStatus(statusBag, parentPin);
+  const content = btoa(unescape(encodeURIComponent(JSON.stringify(publicView()))));
+  const body = { message: "Update family Christmas list", content, branch: "main" };
+  if (sha) body.sha = sha;
+  const saved = await gh("PUT", `/repos/${OWNER}/${DATA_REPO}/contents/${DATA_PATH}`, body);
+  sha = saved.content.sha;
+}
+async function withStore(fn) {
+  if (busy) return;
+  busy = true;
+  try { await fn(); }
+  catch (err) { toast(err.message || "Could not reach the private store"); }
+  finally { busy = false; }
+}
 
-function renderHome() {
-  $("homeKicker").textContent = state.familyName;
-  $("kidPicks").innerHTML = state.kids.map(k =>
-    `<button class="pick" data-kid="${k.id}"><strong>${esc(k.name)}</strong><span>Add a wish</span></button>`
-  ).join("");
-  $("kidPicks").querySelectorAll("[data-kid]").forEach(btn => {
-    btn.onclick = () => openKid(btn.dataset.kid);
+async function boot() {
+  if (!token) { show("join"); return; }
+  await withStore(async () => {
+    try { await loadRemote(); }
+    catch (err) {
+      if (/Not Found/i.test(err.message)) { show("setup"); return; }
+      throw err;
+    }
+    $("brandName").textContent = remote.familyName + " Christmas List";
+    renderHome();
+    show("home");
   });
 }
-
+$("connectBtn").onclick = () => withStore(async () => {
+  token = $("tokenInput").value.trim();
+  if (!token) return toast("Paste the store key");
+  await gh("GET", `/repos/${OWNER}/${DATA_REPO}`);
+  localStorage.setItem(TOKEN_KEY, token);
+  toast("Connected");
+  await boot();
+});
+$("createFamily").onclick = () => withStore(async () => {
+  const familyName = $("familyName").value.trim() || "Our";
+  const pin = $("parentPin").value.trim();
+  const parents = $("parentNames").value.split(",").map(s => s.trim()).filter(Boolean);
+  const kids = $("kidNames").value.split(",").map(s => s.trim()).filter(Boolean);
+  if (!pin) return toast("Add a parent passcode");
+  if (!parents.length || !kids.length) return toast("Add parents and kids");
+  parentPin = pin;
+  sessionStorage.setItem("family-christmas-pin", pin);
+  statusBag = { items: {}, hidden: [] };
+  remote = {
+    familyName, parents,
+    kids: kids.map(name => ({ id: uid(), name })),
+    wishes: [],
+    status: await encryptStatus(statusBag, pin)
+  };
+  sha = null;
+  await saveRemote();
+  toast("Private list created");
+  renderHome();
+  show("home");
+});
+function renderHome() {
+  $("homeKicker").textContent = remote.familyName;
+  $("kidPicks").innerHTML = remote.kids.map(k =>
+    `<button class="pick" data-kid="${k.id}"><strong>${esc(k.name)}</strong><span>Add a wish</span></button>`
+  ).join("");
+  $("kidPicks").querySelectorAll("[data-kid]").forEach(btn => btn.onclick = () => openKid(btn.dataset.kid));
+}
 function openKid(id) {
   activeKid = id;
-  parentUnlocked = false;
   $("kidTitle").textContent = kidName(id) + "’s list";
   $("wishForm").reset();
   renderKid();
   show("kid");
 }
+function visibleKidWishes() {
+  return remote.wishes.filter(w => w.kidId === activeKid);
+}
 function renderKid() {
-  const mine = state.wishes.filter(w => w.kidId === activeKid && !w.secret);
+  const mine = visibleKidWishes();
   $("kidWishes").innerHTML = mine.length ? mine.map(w => `
     <article class="card">
       <div class="wish-top">
         <div>
-          <div class="prio ${w.priority == 3 ? "must" : ""}">${prioLabel(w.priority)}</div>
+          <div class="prio ${Number(w.priority) === 3 ? "must" : ""}">${prioLabel(w.priority)}</div>
           <h3>${esc(w.title)}</h3>
         </div>
         <button class="danger" data-del="${w.id}">Remove</button>
       </div>
       ${w.details ? `<div class="meta">${esc(w.details)}</div>` : ""}
-      ${w.link ? `<div class="meta"><a class="linkish" href="${esc(w.link)}" target="_blank" rel="noopener">Link</a></div>` : ""}
-    </article>`).join("") : `<div class="card empty">Nothing here yet. Add the first wish.</div>`;
-  $("kidWishes").querySelectorAll("[data-del]").forEach(btn => {
-    btn.onclick = () => {
-      state.wishes = state.wishes.filter(w => w.id !== btn.dataset.del);
-      save(); renderKid();
-    };
-  });
+      ${w.link ? `<div class="meta"><a href="${esc(w.link)}" target="_blank" rel="noopener">Link</a></div>` : ""}
+    </article>`).join("") : `<div class="card empty">Nothing here yet.</div>`;
+  $("kidWishes").querySelectorAll("[data-del]").forEach(btn => btn.onclick = () => withStore(async () => {
+    await loadRemote();
+    remote.wishes = remote.wishes.filter(w => w.id !== btn.dataset.del);
+    await saveRemote();
+    renderKid();
+  }));
 }
 $("wishForm").onsubmit = (e) => {
   e.preventDefault();
   const title = $("wishTitle").value.trim();
   if (!title) return;
-  state.wishes.unshift({
-    id: uid(), kidId: activeKid, title,
-    details: $("wishDetails").value.trim(),
-    link: $("wishLink").value.trim(),
-    priority: $("wishPrio").value,
-    secret: false,
-    claimedBy: "",
-    purchased: false,
-    price: "",
-    store: "",
-    adultNote: "",
-    updatedAt: Date.now()
+  withStore(async () => {
+    await loadRemote();
+    remote.wishes.unshift({
+      id: uid(), kidId: activeKid, title,
+      details: $("wishDetails").value.trim(),
+      link: $("wishLink").value.trim(),
+      priority: $("wishPrio").value,
+      updatedAt: Date.now()
+    });
+    await saveRemote();
+    $("wishForm").reset();
+    renderKid();
+    toast("Saved to the private list");
   });
-  save();
-  $("wishForm").reset();
-  renderKid();
-  toast("Added. The parents can see it.");
 };
-
 $("parentEntry").onclick = () => { $("pinInput").value = ""; show("pin"); };
-$("pinGo").onclick = () => {
-  if ($("pinInput").value.trim() !== state.parentPin) return toast("That passcode doesn’t match");
+$("pinGo").onclick = () => withStore(async () => {
+  const pin = $("pinInput").value.trim();
+  if (!pin) return;
+  await loadRemote();
+  try { statusBag = await decryptStatus(remote.status, pin); }
+  catch { return toast("That passcode doesn’t match"); }
+  parentPin = pin;
   parentUnlocked = true;
+  sessionStorage.setItem("family-christmas-pin", pin);
   parentTab = "open";
   renderParent();
   show("parent");
-};
-$("homeBtn").onclick = () => { parentUnlocked = false; activeKid = null; boot(); };
+});
+$("homeBtn").onclick = () => { activeKid = null; boot(); };
+$("refreshBtn").onclick = () => boot();
 
-function visibleWishes() {
-  if (parentTab === "open") return state.wishes.filter(w => !w.purchased);
-  return state.wishes;
+function itemStatus(id) { return statusBag.items[id] || { claimedBy: "", purchased: false, price: "", store: "", adultNote: "", updatedAt: 0 }; }
+function visibleParentWishes() {
+  const hidden = (statusBag.hidden || []).map(w => ({ ...w, secret: true }));
+  const all = remote.wishes.concat(hidden);
+  return parentTab === "open" ? all.filter(w => !itemStatus(w.id).purchased) : all;
 }
 function renderParent() {
   document.querySelectorAll(".tabs .chip").forEach(b => b.classList.remove("on"));
   $("tab" + parentTab[0].toUpperCase() + parentTab.slice(1)).classList.add("on");
-  const open = state.wishes.filter(w => !w.purchased).length;
-  const got = state.wishes.filter(w => w.purchased).length;
-  $("stats").innerHTML = `
-    <div class="stat"><b>${state.wishes.length}</b><span>Wishes</span></div>
-    <div class="stat"><b>${open}</b><span>Still open</span></div>
-    <div class="stat"><b>${got}</b><span>Got it</span></div>`;
+  const all = remote.wishes.concat(statusBag.hidden || []);
+  const got = all.filter(w => itemStatus(w.id).purchased).length;
+  $("stats").innerHTML = `<div class="stat"><b>${all.length}</b><span>Wishes</span></div><div class="stat"><b>${all.length - got}</b><span>Still open</span></div><div class="stat"><b>${got}</b><span>Got it</span></div>`;
   if (parentTab === "set") return renderSettings();
   if (parentTab === "shop") return renderShop();
-  const groups = state.kids.map(k => ({ kid: k, items: visibleWishes().filter(w => w.kidId === k.id) }));
-  $("parentBody").innerHTML = groups.map(g => `
-    <div class="section-label">${esc(g.kid.name)}</div>
-    ${g.items.length ? g.items.map(wishCard).join("") : `<div class="card empty">No ${parentTab === "open" ? "open " : ""}wishes.</div>`}
-    <button class="btn-ghost" data-addfor="${g.kid.id}" style="margin-top:8px">Add a wish for ${esc(g.kid.name)}</button>
-    <form class="card" data-addform="${g.kid.id}" hidden>
-      <label>Wish for ${esc(g.kid.name)}</label>
-      <input data-title="${g.kid.id}" placeholder="What they want" />
-      <label class="hint" style="display:flex;gap:8px;align-items:center;margin-top:10px">
-        <input type="checkbox" data-secret="${g.kid.id}" style="width:auto" /> Hide this from their list
-      </label>
-      <button class="btn-gold" type="submit" style="margin-top:10px">Save wish</button>
-    </form>
-  `).join("");
-  bindWishCards();
+  $("parentBody").innerHTML = remote.kids.map(k => {
+    const items = visibleParentWishes().filter(w => w.kidId === k.id);
+    return `<div class="section-label">${esc(k.name)}</div>
+      ${items.length ? items.map(wishCard).join("") : `<div class="card empty">No ${parentTab === "open" ? "open " : ""}wishes.</div>`}
+      <button class="btn-ghost" data-addfor="${k.id}" style="margin-top:8px">Add a wish for ${esc(k.name)}</button>
+      <form class="card" data-addform="${k.id}" hidden>
+        <input data-title="${k.id}" placeholder="What they want" />
+        <label class="hint" style="display:flex;gap:8px;align-items:center"><input type="checkbox" data-secret="${k.id}" style="width:auto" /> Hide this from their list</label>
+        <button class="btn-gold" type="submit">Save wish</button>
+      </form>`;
+  }).join("");
+  bindParent();
 }
 function wishCard(w) {
-  const claimChips = state.parents.map(p =>
-    `<button class="chip ${w.claimedBy === p ? "on" : ""}" data-claim="${w.id}" data-who="${esc(p)}">${esc(p)}</button>`
-  ).join("");
+  const st = itemStatus(w.id);
+  const claims = remote.parents.map(p => `<button class="chip ${st.claimedBy === p ? "on" : ""}" data-claim="${w.id}" data-who="${esc(p)}">${esc(p)}</button>`).join("");
   return `<article class="card">
     <div class="wish-top">
       <div>
-        <div class="prio ${w.priority == 3 ? "must" : ""}">${prioLabel(w.priority)}${w.secret ? " · just for us" : ""}</div>
+        <div class="prio ${Number(w.priority) === 3 ? "must" : ""}">${prioLabel(w.priority)}${w.secret ? " · just for us" : ""}</div>
         <h3>${esc(w.title)}</h3>
       </div>
-      <button class="chip ${w.purchased ? "got" : ""}" data-got="${w.id}">${w.purchased ? "Got it" : "Mark got it"}</button>
+      <button class="chip ${st.purchased ? "got" : ""}" data-got="${w.id}">${st.purchased ? "Got it" : "Mark got it"}</button>
     </div>
     ${w.details ? `<div class="meta">${esc(w.details)}</div>` : ""}
     ${w.link ? `<div class="meta"><a href="${esc(w.link)}" target="_blank" rel="noopener">Open link</a></div>` : ""}
-    <div class="chips">${claimChips}<button class="chip" data-clear="${w.id}">Clear claim</button></div>
+    <div class="chips">${claims}<button class="chip" data-clear="${w.id}">Clear claim</button></div>
     <div class="row">
-      <input data-field="store" data-id="${w.id}" placeholder="Store" value="${esc(w.store)}" />
-      <input data-field="price" data-id="${w.id}" placeholder="Price" value="${esc(w.price)}" />
+      <input data-field="store" data-id="${w.id}" placeholder="Store" value="${esc(st.store)}" />
+      <input data-field="price" data-id="${w.id}" placeholder="Price" value="${esc(st.price)}" />
     </div>
-    <input data-field="adultNote" data-id="${w.id}" placeholder="Note only you two see" value="${esc(w.adultNote)}" style="margin-top:8px" />
-    <div class="hidden-note">${w.secret ? "Hidden from their list." : "They still see this wish. They cannot see claims, notes, or checkmarks."}</div>
+    <input data-field="adultNote" data-id="${w.id}" placeholder="Note only you two see" value="${esc(st.adultNote)}" style="margin-top:8px" />
+    <div class="hidden-note">${w.secret ? "Hidden from their list." : "They still see this wish. Claims and checkmarks are encrypted."}</div>
   </article>`;
 }
-function bindWishCards() {
-  $("parentBody").querySelectorAll("[data-got]").forEach(btn => btn.onclick = () => {
-    const w = state.wishes.find(x => x.id === btn.dataset.got);
-    w.purchased = !w.purchased;
-    w.updatedAt = Date.now();
-    save(); renderParent();
-  });
-  $("parentBody").querySelectorAll("[data-claim]").forEach(btn => btn.onclick = () => {
-    const w = state.wishes.find(x => x.id === btn.dataset.claim);
-    w.claimedBy = btn.dataset.who;
-    w.updatedAt = Date.now();
-    save(); renderParent();
-  });
-  $("parentBody").querySelectorAll("[data-clear]").forEach(btn => btn.onclick = () => {
-    const w = state.wishes.find(x => x.id === btn.dataset.clear);
-    w.claimedBy = "";
-    save(); renderParent();
-  });
-  $("parentBody").querySelectorAll("[data-field]").forEach(input => {
-    input.onchange = () => {
-      const w = state.wishes.find(x => x.id === input.dataset.id);
-      w[input.dataset.field] = input.value.trim();
-      w.updatedAt = Date.now();
-      save();
-    };
-  });
+function setStatus(id, patch) {
+  statusBag.items[id] = { ...itemStatus(id), ...patch, updatedAt: Date.now() };
+}
+function bindParent() {
+  $("parentBody").querySelectorAll("[data-got]").forEach(btn => btn.onclick = () => withStore(async () => {
+    await loadRemote();
+    const st = itemStatus(btn.dataset.got);
+    setStatus(btn.dataset.got, { purchased: !st.purchased });
+    await saveRemote();
+    renderParent();
+  }));
+  $("parentBody").querySelectorAll("[data-claim]").forEach(btn => btn.onclick = () => withStore(async () => {
+    await loadRemote();
+    setStatus(btn.dataset.claim, { claimedBy: btn.dataset.who });
+    await saveRemote();
+    renderParent();
+  }));
+  $("parentBody").querySelectorAll("[data-clear]").forEach(btn => btn.onclick = () => withStore(async () => {
+    await loadRemote();
+    setStatus(btn.dataset.clear, { claimedBy: "" });
+    await saveRemote();
+    renderParent();
+  }));
+  $("parentBody").querySelectorAll("[data-field]").forEach(input => input.onchange = () => withStore(async () => {
+    await loadRemote();
+    setStatus(input.dataset.id, { [input.dataset.field]: input.value.trim() });
+    await saveRemote();
+  }));
   $("parentBody").querySelectorAll("[data-addfor]").forEach(btn => btn.onclick = () => {
     const form = $("parentBody").querySelector(`[data-addform="${btn.dataset.addfor}"]`);
     form.hidden = !form.hidden;
@@ -465,95 +516,54 @@ function bindWishCards() {
     const kidId = form.dataset.addform;
     const title = form.querySelector("[data-title]").value.trim();
     if (!title) return;
-    state.wishes.unshift({
-      id: uid(), kidId, title, details: "", link: "", priority: "2",
-      secret: form.querySelector("[data-secret]").checked,
-      claimedBy: "", purchased: false, price: "", store: "", adultNote: "", updatedAt: Date.now()
+    withStore(async () => {
+      await loadRemote();
+      const wish = { id: uid(), kidId, title, details: "", link: "", priority: "2", updatedAt: Date.now() };
+      if (form.querySelector("[data-secret]").checked) statusBag.hidden.unshift(wish);
+      else remote.wishes.unshift(wish);
+      await saveRemote();
+      renderParent();
     });
-    save(); renderParent();
   });
 }
-function addFor() {}
 function renderShop() {
-  const items = state.wishes.filter(w => !w.purchased);
-  $("parentBody").innerHTML = items.length ? items.map(w => `
-    <article class="card">
-      <strong>${esc(w.title)}</strong>
-      <div class="meta">${esc(kidName(w.kidId))}${w.claimedBy ? " · " + esc(w.claimedBy) : " · unclaimed"}${w.store ? " · " + esc(w.store) : ""}${w.price ? " · " + esc(w.price) : ""}</div>
-      ${w.adultNote ? `<div class="meta">${esc(w.adultNote)}</div>` : ""}
-    </article>`).join("") + `<button class="btn" style="margin-top:12px" onclick="window.print()">Print</button>`
-    : `<div class="card empty">Nothing left to buy.</div>`;
+  const items = remote.wishes.concat(statusBag.hidden || []).filter(w => !itemStatus(w.id).purchased);
+  $("parentBody").innerHTML = items.length ? items.map(w => {
+    const st = itemStatus(w.id);
+    return `<article class="card"><strong>${esc(w.title)}</strong><div class="meta">${esc(kidName(w.kidId))}${st.claimedBy ? " · " + esc(st.claimedBy) : " · unclaimed"}${st.store ? " · " + esc(st.store) : ""}${st.price ? " · " + esc(st.price) : ""}</div></article>`;
+  }).join("") + `<button class="btn" style="margin-top:12px" onclick="window.print()">Print</button>` : `<div class="card empty">Nothing left to buy.</div>`;
 }
 function renderSettings() {
   $("parentBody").innerHTML = `
     <div class="card">
-      <h3>Share between phones</h3>
-      <p class="meta">This list lives in this browser. Copy a backup, send it to each other, then paste it on the other phone. Newer edits win.</p>
-      <div class="row" style="margin-top:10px">
-        <button class="btn-gold" id="copyBackup">Copy backup</button>
-        <button class="btn" id="pasteBackup">Paste backup</button>
-      </div>
-      <textarea id="backupBox" placeholder="Backup appears here" style="margin-top:10px"></textarea>
+      <h3>Private store</h3>
+      <p class="meta">List file: ${OWNER}/${DATA_REPO}. Bought and claimed are encrypted with the parent passcode. This phone already has the store key.</p>
+      <button class="danger" id="forgetKey">Forget the store key on this phone</button>
     </div>
     <div class="card">
       <h3>Add a child</h3>
-      <div class="row">
-        <input id="newKid" placeholder="Name" />
-        <button class="btn-gold" id="addKid">Add</button>
-      </div>
-    </div>
-    <div class="card">
-      <button class="danger" id="resetAll">Erase this list on this phone</button>
+      <div class="row"><input id="newKid" placeholder="Name" /><button class="btn-gold" id="addKid">Add</button></div>
     </div>`;
-  $("copyBackup").onclick = async () => {
-    const text = btoa(unescape(encodeURIComponent(JSON.stringify(state))));
-    $("backupBox").value = text;
-    try { await navigator.clipboard.writeText(text); toast("Backup copied"); }
-    catch { toast("Backup is in the box. Copy it."); }
+  $("forgetKey").onclick = () => {
+    localStorage.removeItem(TOKEN_KEY);
+    sessionStorage.removeItem("family-christmas-pin");
+    token = ""; parentPin = ""; remote = null;
+    show("join");
   };
-  $("pasteBackup").onclick = () => {
-    const raw = $("backupBox").value.trim();
-    if (!raw) return toast("Paste a backup first");
-    try {
-      const incoming = JSON.parse(decodeURIComponent(escape(atob(raw))));
-      merge(incoming);
-      toast("Lists merged");
-      boot();
-      parentUnlocked = true;
-      show("parent");
-      renderParent();
-    } catch { toast("That backup could not be read"); }
-  };
-  $("addKid").onclick = () => {
+  $("addKid").onclick = () => withStore(async () => {
     const name = $("newKid").value.trim();
     if (!name) return;
-    state.kids.push({ id: uid(), name });
-    save(); renderParent();
-  };
-  $("resetAll").onclick = () => {
-    if (!confirm("Erase the family list on this phone?")) return;
-    localStorage.removeItem(KEY);
-    state = null; parentUnlocked = false;
-    boot();
-  };
-}
-function merge(incoming) {
-  const byId = new Map(state.wishes.map(w => [w.id, w]));
-  incoming.wishes.forEach(w => {
-    const old = byId.get(w.id);
-    if (!old || (w.updatedAt || 0) >= (old.updatedAt || 0)) byId.set(w.id, w);
+    await loadRemote();
+    remote.kids.push({ id: uid(), name });
+    await saveRemote();
+    renderParent();
   });
-  const kids = new Map(state.kids.map(k => [k.id, k]));
-  (incoming.kids || []).forEach(k => kids.set(k.id, k));
-  state.wishes = [...byId.values()].sort((a,b) => (b.updatedAt||0) - (a.updatedAt||0));
-  state.kids = [...kids.values()];
-  if (incoming.parents) state.parents = incoming.parents;
-  save();
 }
-["open","all","shop","set"].forEach(tab => {
+["open", "all", "shop", "set"].forEach(tab => {
   $("tab" + tab[0].toUpperCase() + tab.slice(1)).onclick = () => {
     if (!parentUnlocked) return;
-    parentTab = tab; renderParent();
+    parentTab = tab;
+    renderParent();
   };
 });
 boot();
