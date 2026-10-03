@@ -169,6 +169,8 @@
     <div class="hero">
       <div class="kicker">Your list</div>
       <h2 id="kidTitle">What do you want?</h2>
+      <div class="chips" id="listSwitch"></div>
+      <p class="lede" id="kidLede"></p>
       <form id="wishForm">
         <label>Wish</label>
         <input id="wishTitle" required maxlength="120" placeholder="LEGO castle, art set, zoo day…" />
@@ -189,7 +191,7 @@
           </div>
         </div>
         <div class="row" style="margin-top:14px">
-          <button class="btn-gold" type="submit">Add to my list</button>
+          <button class="btn-gold" id="addWishBtn" type="submit">Add to this list</button>
         </div>
       </form>
     </div>
@@ -232,6 +234,10 @@ const BUDGETS = {
   "jazz-min": 200, zaria: 200,
   taitum: 150, summer: 150, skyler: 150, whitlee: 150
 };
+const CAREGIVERS = {
+  "jazz-min": ["summer", "skyler"],
+  zaria: ["taitum", "whitlee"]
+};
 const $ = (id) => document.getElementById(id);
 
 let token = localStorage.getItem(TOKEN_KEY) || "";
@@ -267,6 +273,14 @@ function dollars(n) { return "$" + Math.round(n).toLocaleString("en-US"); }
 function budgetFor(kid) {
   if (kid && kid.budget) return kid.budget;
   return BUDGETS[(kid.name || "").toLowerCase()] || 0;
+}
+function norm(name) { return String(name || "").toLowerCase(); }
+function kidName(id) { return (remote.kids.find(k => k.id === id) || {}).name || "Someone"; }
+function managedNames(name) { return CAREGIVERS[norm(name)] || []; }
+function isManaged(name) { return Object.values(CAREGIVERS).some(list => list.includes(norm(name))); }
+function kidByName(name) { return remote.kids.find(k => norm(k.name) === norm(name)); }
+function listsFor(kid) {
+  return [kid, ...managedNames(kid.name).map(kidByName).filter(Boolean)];
 }
 function kidSpend(kidId) {
   const all = remote.wishes.concat(statusBag.hidden || []);
@@ -399,14 +413,16 @@ $("createFamily").onclick = () => withStore(async () => {
 });
 function renderHome() {
   $("homeKicker").textContent = remote.familyName;
-  $("kidPicks").innerHTML = remote.kids.map(k =>
-    `<button class="pick" data-kid="${k.id}"><strong>${esc(k.name)}</strong><span>Add a wish</span></button>`
-  ).join("");
+  const picks = remote.kids.filter(k => !isManaged(k.name));
+  $("kidPicks").innerHTML = picks.map(k => {
+    const extra = managedNames(k.name).map(kidByName).filter(Boolean).map(c => c.name);
+    const note = extra.length ? "Also adds for " + extra.join(" and ") : "Add a wish";
+    return `<button class="pick" data-kid="${k.id}"><strong>${esc(k.name)}</strong><span>${esc(note)}</span></button>`;
+  }).join("");
   $("kidPicks").querySelectorAll("[data-kid]").forEach(btn => btn.onclick = () => openKid(btn.dataset.kid));
 }
 function openKid(id) {
   activeKid = id;
-  $("kidTitle").textContent = kidName(id) + "’s list";
   $("wishForm").reset();
   renderKid();
   show("kid");
@@ -415,6 +431,18 @@ function visibleKidWishes() {
   return remote.wishes.filter(w => w.kidId === activeKid);
 }
 function renderKid() {
+  const current = remote.kids.find(k => k.id === activeKid) || remote.kids[0];
+  const owner = listsFor(current).length > 1 ? current : remote.kids.find(k => managedNames(k.name).includes(norm(current.name))) || current;
+  const lists = listsFor(owner);
+  if (!lists.some(k => k.id === activeKid)) activeKid = owner.id;
+  const showing = remote.kids.find(k => k.id === activeKid);
+  $("kidTitle").textContent = showing.name + "’s list";
+  $("addWishBtn").textContent = "Add to " + showing.name + "’s list";
+  $("kidLede").textContent = lists.length > 1 ? owner.name + " can add wishes for " + lists.slice(1).map(k => k.name).join(" and ") + "." : "";
+  $("listSwitch").innerHTML = lists.length > 1 ? lists.map(k =>
+    `<button class="chip ${k.id === activeKid ? "on" : ""}" data-switch="${k.id}" type="button">${esc(k.name)}</button>`
+  ).join("") : "";
+  $("listSwitch").querySelectorAll("[data-switch]").forEach(btn => btn.onclick = () => { activeKid = btn.dataset.switch; renderKid(); });
   const mine = visibleKidWishes();
   $("kidWishes").innerHTML = mine.length ? mine.map(w => `
     <article class="card">
