@@ -79,7 +79,15 @@
   .row > * { flex: 1; }
   label { display: block; font-size: 13px; color: var(--muted); margin: 12px 0 6px; }
   input, textarea, select {
-    width: 100%; background: #1a0c10; border: 1px solid var(--line); border-radius: 12px; padding: 12px; outline: none;
+    width: 100%; background: #1a0c10; border: 1px solid var(--line); border-radius: 12px; padding: 12px;
+  }
+  :focus { outline: none; }
+  :focus-visible {
+    outline: 2px solid var(--gold);
+    outline-offset: 3px;
+  }
+  input:focus-visible, textarea:focus-visible, select:focus-visible {
+    border-color: var(--gold);
   }
   textarea { min-height: 74px; resize: vertical; }
   .wish-top { display: flex; justify-content: space-between; gap: 8px; align-items: flex-start; }
@@ -258,7 +266,7 @@
       <div class="kicker">Private store</div>
       <h2>Connect this phone</h2>
       <p class="lede">The list lives in a private GitHub repo, not the public site. Paste the store key once on each phone.</p>
-      <label>Store key</label>
+      <label for="tokenInput">Store key</label>
       <input id="tokenInput" type="password" placeholder="github_pat_..." autocomplete="off" />
       <p class="hint">Parents: create one key for the private data repo only, then text it to the phones that should use the list. Kids never see bought items, even with this key.</p>
       <div class="row" style="margin-top:14px">
@@ -272,13 +280,13 @@
       <div class="kicker">First night</div>
       <h2>Create the family list</h2>
       <p class="lede">This writes the list into the private repo. Bought and claimed stay encrypted with your passcode.</p>
-      <label>Family name</label>
+      <label for="familyName">Family name</label>
       <input id="familyName" maxlength="40" />
-      <label>Parent passcode</label>
+      <label for="parentPin">Parent passcode</label>
       <input id="parentPin" maxlength="32" />
-      <label>Your names, comma separated</label>
+      <label for="parentNames">Your names, comma separated</label>
       <input id="parentNames" placeholder="Mom, Dad" maxlength="80" />
-      <label>Kids and grandkids, comma separated</label>
+      <label for="kidNames">Kids and grandkids, comma separated</label>
       <input id="kidNames" value="Devin, Jeremiah, Marissa, jazz-min, Zaria, Taitum, Summer, Skyler, Whitlee" maxlength="200" />
       <p class="hint">Budgets: Devin, Jeremiah, and Marissa $300. jazz-min and Zaria $200. Taitum, Summer, Skyler, and Whitlee $150. Assigned $1,900 of the $2,000 cap, so $100 is unassigned.</p>
       <div class="row" style="margin-top:16px">
@@ -307,13 +315,13 @@
       <div class="chips" id="listSwitch"></div>
       <p class="lede" id="kidLede"></p>
       <form id="wishForm">
-        <label>Wish</label>
+        <label for="wishTitle">Wish</label>
         <input id="wishTitle" required maxlength="120" placeholder="LEGO castle, art set, zoo day…" />
-        <label>Details</label>
+        <label for="wishDetails">Details</label>
         <textarea id="wishDetails" maxlength="400" placeholder="Color, size, which one"></textarea>
         <div class="row">
           <div>
-            <label>Link</label>
+            <label for="wishLink">Link</label>
             <input id="wishLink" maxlength="300" placeholder="https://" />
           </div>
           <div>
@@ -338,7 +346,7 @@
       <div class="kicker">Parents</div>
       <h2>Passcode</h2>
       <p class="lede">This unlocks claims and checkmarks. The kids’ page cannot open them.</p>
-      <label>Passcode</label>
+      <label for="pinInput">Passcode</label>
       <input id="pinInput" type="password" maxlength="32" />
       <div class="row" style="margin-top:14px">
         <button class="btn-gold" id="pinGo">Open the list</button>
@@ -665,7 +673,7 @@ function renderParent() {
       ${items.length ? items.map(wishCard).join("") : `<div class="card empty">No ${parentTab === "open" ? "open " : ""}wishes.</div>`}
       <button class="btn-ghost" data-addfor="${k.id}" style="margin-top:8px">Add a wish for ${esc(k.name)}</button>
       <form class="card" data-addform="${k.id}" hidden>
-        <input data-title="${k.id}" placeholder="What they want" />
+        <input data-title="${k.id}" aria-label="Wish for ${esc(k.name)}" placeholder="What they want" />
         <label class="hint" style="display:flex;gap:8px;align-items:center"><input type="checkbox" data-secret="${k.id}" style="width:auto" /> Hide this from their list</label>
         <button class="btn-gold" type="submit">Save wish</button>
       </form>`;
@@ -687,10 +695,10 @@ function wishCard(w) {
     ${w.link ? `<div class="meta"><a href="${esc(w.link)}" target="_blank" rel="noopener">Open link</a></div>` : ""}
     <div class="chips">${claims}<button class="chip" data-clear="${w.id}">Clear claim</button></div>
     <div class="row">
-      <input data-field="store" data-id="${w.id}" placeholder="Store" value="${esc(st.store)}" />
-      <input data-field="price" data-id="${w.id}" placeholder="Price" value="${esc(st.price)}" />
+      <input data-field="store" data-id="${w.id}" aria-label="Store" placeholder="Store" value="${esc(st.store)}" />
+      <input data-field="price" data-id="${w.id}" aria-label="Price" placeholder="Price" value="${esc(st.price)}" />
     </div>
-    <input data-field="adultNote" data-id="${w.id}" placeholder="Note only you two see" value="${esc(st.adultNote)}" style="margin-top:8px" />
+    <input data-field="adultNote" data-id="${w.id}" aria-label="Parent note" placeholder="Note only you two see" value="${esc(st.adultNote)}" style="margin-top:8px" />
     <div class="hidden-note">${w.secret ? "Hidden from their list." : "They still see this wish. Claims and checkmarks are encrypted."}</div>
   </article>`;
 }
@@ -757,7 +765,7 @@ function renderSettings() {
     </div>
     <div class="card">
       <h3>Add a child</h3>
-      <div class="row"><input id="newKid" placeholder="Name" /><button class="btn-gold" id="addKid">Add</button></div>
+      <label for="newKid">Child's name</label><div class="row"><input id="newKid" placeholder="Name" /><button class="btn-gold" id="addKid">Add</button></div>
     </div>`;
   $("forgetKey").onclick = () => {
     localStorage.removeItem(TOKEN_KEY);
