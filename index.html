@@ -815,7 +815,7 @@ document.querySelectorAll("#themeRow button").forEach(btn => {
 
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", () => {
-    navigator.serviceWorker.register("./sw.js").catch(() => {});
+    navigator.serviceWorker.register("/family-christmas-list/sw.js", { scope: "/family-christmas-list/" }).catch(() => {});
   });
 }
 
