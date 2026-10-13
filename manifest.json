@@ -1,0 +1,19 @@
+{
+  "name": "Family Christmas List",
+  "short_name": "Christmas List",
+  "description": "Family Christmas wish list. Kids add wishes. Parents claim and check off gifts without spoiling the surprise.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "theme_color": "#6e1c24",
+  "background_color": "#14080c",
+  "icons": [
+    {
+      "src": "icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
