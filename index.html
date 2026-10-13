@@ -322,7 +322,7 @@
         <div class="row">
           <div>
             <label for="wishLink">Link</label>
-            <input id="wishLink" maxlength="300" placeholder="https://" />
+            <input id="wishLink" type="url" inputmode="url" maxlength="300" placeholder="https://" />
           </div>
           <div>
             <label for="wishPrio">How badly?</label>
@@ -402,6 +402,17 @@ function toast(msg) {
 }
 function uid() { return Math.random().toString(36).slice(2, 10); }
 function esc(s) { return String(s || "").replace(/[&<>"']/g, c => "&#" + c.charCodeAt(0) + ";"); }
+function safeUrl(raw) {
+  const value = String(raw || "").trim();
+  if (!value) return "";
+  const candidate = /^https?:\/\//i.test(value) ? value : "https://" + value;
+  let url;
+  try { url = new URL(candidate); }
+  catch { return null; }
+  if (url.protocol !== "http:" && url.protocol !== "https:") return null;
+  if (!url.hostname || url.hostname.indexOf(".") === -1) return null;
+  return url.href;
+}
 function show(id) {
   document.querySelectorAll(".screen").forEach(s => s.classList.remove("on"));
   $(id).classList.add("on");
@@ -597,7 +608,7 @@ function renderKid() {
         <button class="danger" data-del="${w.id}">Remove</button>
       </div>
       ${w.details ? `<div class="meta">${esc(w.details)}</div>` : ""}
-      ${w.link ? `<div class="meta"><a href="${esc(w.link)}" target="_blank" rel="noopener">Link</a></div>` : ""}
+      ${linkHtml(w.link, "Link")}
     </article>`).join("") : `<div class="card empty">Nothing here yet.</div>`;
   $("kidWishes").querySelectorAll("[data-del]").forEach(btn => btn.onclick = () => withStore(async () => {
     await loadRemote();
@@ -610,12 +621,14 @@ $("wishForm").onsubmit = (e) => {
   e.preventDefault();
   const title = $("wishTitle").value.trim();
   if (!title) return;
+  const link = safeUrl($("wishLink").value);
+  if (link === null) return toast("Use an http or https link");
   withStore(async () => {
     await loadRemote();
     remote.wishes.unshift({
       id: uid(), kidId: activeKid, title,
       details: $("wishDetails").value.trim(),
-      link: $("wishLink").value.trim(),
+      link,
       priority: $("wishPrio").value,
       updatedAt: Date.now()
     });
@@ -642,6 +655,11 @@ $("pinGo").onclick = () => withStore(async () => {
 $("homeBtn").onclick = () => { activeKid = null; boot(); };
 $("refreshBtn").onclick = () => boot();
 
+function linkHtml(url, label) {
+  const safe = safeUrl(url);
+  if (!safe) return url ? `<div class="meta">${esc(url)}</div>` : "";
+  return `<div class="meta"><a href="${esc(safe)}" target="_blank" rel="noopener noreferrer">${esc(label)}</a></div>`;
+}
 function itemStatus(id) { return statusBag.items[id] || { claimedBy: "", purchased: false, price: "", store: "", adultNote: "", updatedAt: 0 }; }
 function visibleParentWishes() {
   const hidden = (statusBag.hidden || []).map(w => ({ ...w, secret: true }));
@@ -692,7 +710,7 @@ function wishCard(w) {
       <button class="chip ${st.purchased ? "got" : ""}" data-got="${w.id}">${st.purchased ? "Got it" : "Mark got it"}</button>
     </div>
     ${w.details ? `<div class="meta">${esc(w.details)}</div>` : ""}
-    ${w.link ? `<div class="meta"><a href="${esc(w.link)}" target="_blank" rel="noopener">Open link</a></div>` : ""}
+    ${linkHtml(w.link, "Open link")}
     <div class="chips">${claims}<button class="chip" data-clear="${w.id}">Clear claim</button></div>
     <div class="row">
       <input data-field="store" data-id="${w.id}" aria-label="Store" placeholder="Store" value="${esc(st.store)}" />
