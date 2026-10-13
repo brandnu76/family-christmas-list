@@ -273,7 +273,7 @@
       <p class="lede">The list lives in a private GitHub repo, not the public site. Paste the store key once on each phone.</p>
       <label for="tokenInput">Store key</label>
       <input id="tokenInput" type="password" placeholder="github_pat_..." autocomplete="off" />
-      <p class="hint">Parents: create one key for the private data repo only, then text it to the phones that should use the list. Kids never see bought items, even with this key.</p>
+      <p class="hint">Key rule: one key, for the private data repo only. Put it on parent phones. Avoid a kid’s phone if you can. Kids never see bought items, even with this key.</p>
       <div class="row" style="margin-top:14px">
         <button class="btn-gold" id="connectBtn">Connect</button>
       </div>
@@ -828,7 +828,7 @@ function renderSettings() {
   $("parentBody").innerHTML = `
     <div class="card">
       <h3>Private store</h3>
-      <p class="meta">List file: ${OWNER}/${DATA_REPO}. Bought and claimed are encrypted with the parent passcode. This phone already has the store key.</p>
+      <p class="meta">List file: ${OWNER}/${DATA_REPO}. Key rule: one key, this repo only, parent phones if you can avoid the kids’ phones. Bought and claimed stay encrypted with the parent passcode. This phone already has the store key.</p>
       <button class="danger" id="forgetKey">Forget the store key on this phone</button>
     </div>
     <div class="card">
