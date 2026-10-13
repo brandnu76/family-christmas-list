@@ -1,8 +1,8 @@
 {
-  "name": "Family Christmas List",
+  "name": "Atkins-Carroll Christmas List",
   "short_name": "Christmas List",
   "description": "Family Christmas wish list. Kids add wishes. Parents claim and check off gifts without spoiling the surprise.",
-  "id": "https://brandnu76.github.io/family-christmas-list/",
+  "id": "/family-christmas-list/app-v2",
   "start_url": "https://brandnu76.github.io/family-christmas-list/",
   "scope": "https://brandnu76.github.io/family-christmas-list/",
   "display": "standalone",
@@ -11,16 +11,28 @@
   "background_color": "#14080c",
   "icons": [
     {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
       "src": "icon.svg",
       "sizes": "any",
       "type": "image/svg+xml",
       "purpose": "any"
-    },
-    {
-      "src": "icon.svg",
-      "sizes": "512x512",
-      "type": "image/svg+xml",
-      "purpose": "maskable"
     }
   ]
 }
