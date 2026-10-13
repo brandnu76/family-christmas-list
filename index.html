@@ -114,6 +114,11 @@
     background: #f6f1e7; color: #1a140c; padding: 10px 14px; border-radius: 999px;
     font-size: 13px; font-weight: 650; display: none; z-index: 5; max-width: 90vw;
   }
+
+  body.is-saving { cursor: progress; }
+  body.is-saving .btn, body.is-saving .btn-gold, body.is-saving .pick, body.is-saving .chip, body.is-saving .icon-btn {
+    opacity: .7;
+  }
   .section-label { margin: 18px 0 0; color: var(--gold); font-size: 13px; letter-spacing: .08em; text-transform: uppercase; }
   @media print { .no-print { display: none !important; } body { background: white; color: black; } }
 
@@ -393,12 +398,17 @@ let activeKid = null;
 let parentTab = "open";
 let busy = false;
 
-function toast(msg) {
+function toast(msg, ms) {
   const t = $("toast");
   t.textContent = msg;
   t.style.display = "block";
   clearTimeout(toast._t);
-  toast._t = setTimeout(() => { t.style.display = "none"; }, 2400);
+  if (ms === 0) return;
+  toast._t = setTimeout(() => { t.style.display = "none"; }, ms || 2400);
+}
+function hideToast() {
+  clearTimeout(toast._t);
+  $("toast").style.display = "none";
 }
 function uid() { return Math.random().toString(36).slice(2, 10); }
 function esc(s) { return String(s || "").replace(/[&<>"']/g, c => "&#" + c.charCodeAt(0) + ";"); }
@@ -485,7 +495,11 @@ async function gh(method, path, body) {
   const text = await res.text();
   let data = null;
   try { data = text ? JSON.parse(text) : null; } catch { data = { message: text }; }
-  if (!res.ok) throw new Error((data && data.message) || "Store request failed");
+  if (!res.ok) {
+    const err = new Error((data && data.message) || "Store request failed");
+    err.status = res.status;
+    throw err;
+  }
   return data;
 }
 function publicView() {
@@ -506,7 +520,7 @@ async function loadRemote() {
     catch { parentUnlocked = false; }
   }
 }
-async function saveRemote() {
+async function putRemote() {
   if (parentPin) remote.status = await encryptStatus(statusBag, parentPin);
   const content = btoa(unescape(encodeURIComponent(JSON.stringify(publicView()))));
   const body = { message: "Update family Christmas list", content, branch: "main" };
@@ -514,17 +528,53 @@ async function saveRemote() {
   const saved = await gh("PUT", `/repos/${OWNER}/${DATA_REPO}/contents/${DATA_PATH}`, body);
   sha = saved.content.sha;
 }
-async function withStore(fn) {
-  if (busy) return;
+async function saveRemote() {
+  try {
+    await putRemote();
+  } catch (err) {
+    if (err.status !== 409) throw err;
+    const mine = {
+      familyName: remote.familyName,
+      parents: remote.parents.slice(),
+      kids: remote.kids.slice(),
+      wishes: remote.wishes.slice(),
+      statusBag: JSON.parse(JSON.stringify(statusBag))
+    };
+    toast("Someone else saved. Trying again…", 0);
+    await loadRemote();
+    remote.familyName = mine.familyName;
+    remote.parents = mine.parents;
+    remote.kids = mine.kids;
+    remote.wishes = mine.wishes;
+    statusBag = mine.statusBag;
+    await putRemote();
+  }
+}
+async function withStore(label, fn) {
+  if (typeof label === "function") { fn = label; label = "Working…"; }
+  if (busy) return toast("Still working…");
   busy = true;
-  try { await fn(); }
-  catch (err) { toast(err.message || "Could not reach the private store"); }
-  finally { busy = false; }
+  const working = label || "Working…";
+  document.body.classList.add("is-saving");
+  document.body.setAttribute("aria-busy", "true");
+  toast(working, 0);
+  try {
+    await fn();
+    if ($("toast").textContent === working || $("toast").textContent === "Someone else saved. Trying again…") {
+      toast(working === "Saving…" ? "Saved" : "Done", 1200);
+    }
+  } catch (err) {
+    toast(err.message || "Could not reach the private store");
+  } finally {
+    busy = false;
+    document.body.classList.remove("is-saving");
+    document.body.removeAttribute("aria-busy");
+  }
 }
 
 async function boot() {
   if (!token) { show("join"); return; }
-  await withStore(async () => {
+  await withStore("Loading…", async () => {
     try { await loadRemote(); }
     catch (err) {
       if (/Not Found/i.test(err.message)) { show("setup"); return; }
@@ -535,7 +585,7 @@ async function boot() {
     show("home");
   });
 }
-$("connectBtn").onclick = () => withStore(async () => {
+$("connectBtn").onclick = () => withStore("Connecting…", async () => {
   token = $("tokenInput").value.trim();
   if (!token) return toast("Paste the store key");
   await gh("GET", `/repos/${OWNER}/${DATA_REPO}`);
@@ -543,7 +593,7 @@ $("connectBtn").onclick = () => withStore(async () => {
   toast("Connected");
   await boot();
 });
-$("createFamily").onclick = () => withStore(async () => {
+$("createFamily").onclick = () => withStore("Saving…", async () => {
   const familyName = $("familyName").value.trim() || "Our";
   const pin = $("parentPin").value.trim();
   const parents = $("parentNames").value.split(",").map(s => s.trim()).filter(Boolean);
@@ -610,7 +660,7 @@ function renderKid() {
       ${w.details ? `<div class="meta">${esc(w.details)}</div>` : ""}
       ${linkHtml(w.link, "Link")}
     </article>`).join("") : `<div class="card empty">Nothing here yet.</div>`;
-  $("kidWishes").querySelectorAll("[data-del]").forEach(btn => btn.onclick = () => withStore(async () => {
+  $("kidWishes").querySelectorAll("[data-del]").forEach(btn => btn.onclick = () => withStore("Saving…", async () => {
     await loadRemote();
     remote.wishes = remote.wishes.filter(w => w.id !== btn.dataset.del);
     await saveRemote();
@@ -623,7 +673,7 @@ $("wishForm").onsubmit = (e) => {
   if (!title) return;
   const link = safeUrl($("wishLink").value);
   if (link === null) return toast("Use an http or https link");
-  withStore(async () => {
+  withStore("Saving…", async () => {
     await loadRemote();
     remote.wishes.unshift({
       id: uid(), kidId: activeKid, title,
@@ -639,7 +689,7 @@ $("wishForm").onsubmit = (e) => {
   });
 };
 $("parentEntry").onclick = () => { $("pinInput").value = ""; show("pin"); };
-$("pinGo").onclick = () => withStore(async () => {
+$("pinGo").onclick = () => withStore("Checking…", async () => {
   const pin = $("pinInput").value.trim();
   if (!pin) return;
   await loadRemote();
@@ -724,26 +774,26 @@ function setStatus(id, patch) {
   statusBag.items[id] = { ...itemStatus(id), ...patch, updatedAt: Date.now() };
 }
 function bindParent() {
-  $("parentBody").querySelectorAll("[data-got]").forEach(btn => btn.onclick = () => withStore(async () => {
+  $("parentBody").querySelectorAll("[data-got]").forEach(btn => btn.onclick = () => withStore("Saving…", async () => {
     await loadRemote();
     const st = itemStatus(btn.dataset.got);
     setStatus(btn.dataset.got, { purchased: !st.purchased });
     await saveRemote();
     renderParent();
   }));
-  $("parentBody").querySelectorAll("[data-claim]").forEach(btn => btn.onclick = () => withStore(async () => {
+  $("parentBody").querySelectorAll("[data-claim]").forEach(btn => btn.onclick = () => withStore("Saving…", async () => {
     await loadRemote();
     setStatus(btn.dataset.claim, { claimedBy: btn.dataset.who });
     await saveRemote();
     renderParent();
   }));
-  $("parentBody").querySelectorAll("[data-clear]").forEach(btn => btn.onclick = () => withStore(async () => {
+  $("parentBody").querySelectorAll("[data-clear]").forEach(btn => btn.onclick = () => withStore("Saving…", async () => {
     await loadRemote();
     setStatus(btn.dataset.clear, { claimedBy: "" });
     await saveRemote();
     renderParent();
   }));
-  $("parentBody").querySelectorAll("[data-field]").forEach(input => input.onchange = () => withStore(async () => {
+  $("parentBody").querySelectorAll("[data-field]").forEach(input => input.onchange = () => withStore("Saving…", async () => {
     await loadRemote();
     setStatus(input.dataset.id, { [input.dataset.field]: input.value.trim() });
     await saveRemote();
@@ -757,7 +807,7 @@ function bindParent() {
     const kidId = form.dataset.addform;
     const title = form.querySelector("[data-title]").value.trim();
     if (!title) return;
-    withStore(async () => {
+    withStore("Saving…", async () => {
       await loadRemote();
       const wish = { id: uid(), kidId, title, details: "", link: "", priority: "2", updatedAt: Date.now() };
       if (form.querySelector("[data-secret]").checked) statusBag.hidden.unshift(wish);
@@ -791,7 +841,7 @@ function renderSettings() {
     token = ""; parentPin = ""; remote = null;
     show("join");
   };
-  $("addKid").onclick = () => withStore(async () => {
+  $("addKid").onclick = () => withStore("Saving…", async () => {
     const name = $("newKid").value.trim();
     if (!name) return;
     await loadRemote();
