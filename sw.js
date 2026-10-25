@@ -1,4 +1,4 @@
-const CACHE = "christmas-list-v3";
+const CACHE = "christmas-list-v4";
 const BASE = "/family-christmas-list/";
 const ASSETS = [BASE, BASE + "index.html", BASE + "manifest.json", BASE + "icon.svg"];
 
@@ -18,6 +18,9 @@ self.addEventListener("activate", (event) => {
 self.addEventListener("fetch", (event) => {
   if (event.request.method !== "GET") return;
   const req = event.request;
+  const url = new URL(req.url);
+  // Never intercept GitHub API calls — they must go straight to the network
+  if (url.hostname === "api.github.com") return;
   const isPage = req.mode === "navigate" || req.destination === "document";
   if (isPage) {
     event.respondWith(
