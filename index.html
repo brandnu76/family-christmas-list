@@ -293,7 +293,7 @@
       <input id="parentNames" placeholder="Mom, Dad" maxlength="80" />
       <label for="kidNames">Kids and grandkids, comma separated</label>
       <input id="kidNames" value="Devin, Jeremiah, Marissa, jazz-min, Zaria, Taitum, Summer, Skyler, Whitlee" maxlength="200" />
-      <p class="hint">Budgets: Devin, Jeremiah, and Marissa $300. jazz-min and Zaria $200. Taitum, Summer, Skyler, and Whitlee $150. Assigned $1,900 of the $2,000 cap, so $100 is unassigned.</p>
+      <p class="hint">Budgets: Devin, Jeremiah, Marissa, jazz-min, and Zaria $400 each ($2,000 total). Taitum, Summer, Skyler, and Whitlee are under their parents’ lists.</p>
       <div class="row" style="margin-top:16px">
         <button class="btn-gold" id="createFamily">Create the list</button>
       </div>
@@ -383,9 +383,9 @@ const DATA_PATH = "list.json";
 const TOKEN_KEY = "family-christmas-token";
 const TOTAL_BUDGET = 2000;
 const BUDGETS = {
-  devin: 300, jeremiah: 300, marissa: 300,
-  "jazz-min": 200, zaria: 200,
-  taitum: 150, summer: 150, skyler: 150, whitlee: 150
+  devin: 400, jeremiah: 400, marissa: 400,
+  "jazz-min": 400, zaria: 400,
+  taitum: 0, summer: 0, skyler: 0, whitlee: 0
 };
 const CAREGIVERS = {
   "jazz-min": ["summer", "skyler"],
