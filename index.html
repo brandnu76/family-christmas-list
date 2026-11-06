@@ -120,6 +120,8 @@
     opacity: .7;
   }
   .section-label { margin: 18px 0 0; color: var(--gold); font-size: 13px; letter-spacing: .08em; text-transform: uppercase; }
+  .card h3, .meta, .meta a { overflow-wrap: anywhere; }
+  .btn-block { display: block; width: 100%; margin-top: 14px; }
   @media print { .no-print { display: none !important; } body { background: white; color: black; } }
 
   body { position: relative; overflow-x: hidden; }
@@ -170,6 +172,7 @@
     content: ""; position: absolute; inset: -40% auto auto -30%; width: 55%; height: 140%;
     background: linear-gradient(100deg, transparent, rgba(240,212,138,.16), transparent);
     animation: sheen 7s ease-in-out infinite;
+    pointer-events: none;
   }
   .kicker { animation: twinkle 2.4s ease-in-out infinite; }
   .btn-gold { position: relative; overflow: hidden; }
@@ -306,10 +309,24 @@
       <h2>Who’s adding a wish?</h2>
       <p class="lede">A new wish shows up on the other phones. Bought stays on the parent side.</p>
       <div class="kid-picks" id="kidPicks"></div>
-      <div class="row" style="margin-top:14px">
-        <button class="btn-gold" id="parentEntry">We’re the parents</button>
-        <button class="btn" id="refreshBtn">Refresh</button>
+      <button class="btn btn-block" id="browseBtn" type="button">See everyone’s wishes</button>
+      <div class="row" style="margin-top:10px">
+        <button class="btn-gold" id="parentEntry" type="button">We’re the parents</button>
+        <button class="btn" id="refreshBtn" type="button">Refresh</button>
       </div>
+    </div>
+  </section>
+
+  <section class="screen" id="browse" aria-labelledby="browseHeading">
+    <div class="hero">
+      <div class="kicker" id="browseKicker">Everyone</div>
+      <h2 id="browseHeading">Everyone’s wishes</h2>
+      <p class="lede" id="browseLede">Every list on one screen. Bought stays on the parent side.</p>
+      <button class="btn btn-block" id="browseRefresh" type="button" style="margin-top:0">Refresh</button>
+    </div>
+    <div id="browseBody"></div>
+    <div class="row no-print" style="margin-top:16px">
+      <button class="btn" id="browseHome" type="button">Back to home</button>
     </div>
   </section>
 
@@ -528,14 +545,21 @@ function publicView() {
     status: remote.status
   };
 }
-async function loadRemote() {
+async function readListFile() {
   const file = await gh("GET", `/repos/${OWNER}/${DATA_REPO}/contents/${DATA_PATH}?ref=main`);
   sha = file.sha;
   remote = JSON.parse(new TextDecoder().decode(unb64(file.content.replace(/\n/g, ""))));
+}
+async function loadRemote() {
+  await readListFile();
   if (parentPin && remote.status) {
     try { statusBag = await decryptStatus(remote.status, parentPin); parentUnlocked = true; }
     catch { parentUnlocked = false; }
   }
+}
+// Public browse only. Reads list.json and does not decrypt status or write.
+async function loadPublicList() {
+  await readListFile();
 }
 async function putRemote() {
   if (parentPin) remote.status = await encryptStatus(statusBag, parentPin);
@@ -643,6 +667,50 @@ function renderHome() {
     return `<button class="pick" data-kid="${k.id}"><strong>${esc(k.name)}</strong><span>${esc(note)}</span></button>`;
   }).join("");
   $("kidPicks").querySelectorAll("[data-kid]").forEach(btn => btn.onclick = () => openKid(btn.dataset.kid));
+}
+function publicWishes() {
+  return (Array.isArray(remote && remote.wishes) ? remote.wishes : []).filter(w => w && !w.secret);
+}
+function browseCard(w) {
+  return `<article class="card">
+    <div class="wish-top">
+      <div>
+        <div class="prio ${Number(w.priority) === 3 ? "must" : ""}">${prioLabel(w.priority)}</div>
+        <h3>${esc(w.title)}</h3>
+      </div>
+    </div>
+    ${w.details ? `<div class="meta">${esc(w.details)}</div>` : ""}
+    ${linkHtml(w.link, "Open link")}
+  </article>`;
+}
+function renderBrowse() {
+  if (!remote) return;
+  const kids = Array.isArray(remote.kids) ? remote.kids : [];
+  const wishes = publicWishes();
+  const known = new Set(kids.map(k => k.id));
+  const groups = kids.map(k => ({
+    name: k.name || "Someone",
+    wishes: wishes.filter(w => w.kidId === k.id)
+  }));
+  const extraIds = [];
+  wishes.forEach(w => {
+    if (!known.has(w.kidId) && extraIds.indexOf(w.kidId) === -1) extraIds.push(w.kidId);
+  });
+  extraIds.forEach(id => {
+    groups.push({ name: "Someone", wishes: wishes.filter(w => w.kidId === id) });
+  });
+  const total = groups.reduce((n, g) => n + g.wishes.length, 0);
+  $("browseKicker").textContent = remote.familyName || "Everyone";
+  $("browseLede").textContent = total
+    ? "Every list on one screen. " + total + (total === 1 ? " wish. " : " wishes. ") + "Bought stays on the parent side."
+    : "No wishes yet. Bought stays on the parent side.";
+  $("browseBody").innerHTML = groups.length ? groups.map(g => {
+    const count = g.wishes.length === 1 ? " · 1 wish" : g.wishes.length ? " · " + g.wishes.length + " wishes" : "";
+    const cards = g.wishes.length
+      ? g.wishes.map(browseCard).join("")
+      : `<div class="card empty">Nothing here yet.</div>`;
+    return `<div class="section-label">${esc(g.name)}${count}</div>${cards}`;
+  }).join("") : `<div class="card empty">No lists yet.</div>`;
 }
 function openKid(id) {
   activeKid = id;
@@ -853,10 +921,25 @@ $("refreshBtn").onclick = () => withStore("Refreshing…", async () => {
   renderHome();
   toast("Refreshed");
 });
-$("homeBtn").onclick = () => {
+function goHome() {
   show("home");
   renderHome();
-};
+  window.scrollTo(0, 0);
+}
+$("homeBtn").onclick = goHome;
+$("browseHome").onclick = goHome;
+$("browseBtn").onclick = () => withStore("Loading…", async () => {
+  await loadPublicList();
+  renderBrowse();
+  show("browse");
+  window.scrollTo(0, 0);
+  hideToast();
+});
+$("browseRefresh").onclick = () => withStore("Refreshing…", async () => {
+  await loadPublicList();
+  renderBrowse();
+  toast("Refreshed");
+});
 
 const THEME_KEY = "family-christmas-theme";
 function applyTheme(name) {
