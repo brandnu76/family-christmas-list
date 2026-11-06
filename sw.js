@@ -1,4 +1,4 @@
-const CACHE = "christmas-list-v4";
+const CACHE = "christmas-list-v5";
 const BASE = "/family-christmas-list/";
 const ASSETS = [BASE, BASE + "index.html", BASE + "manifest.json", BASE + "icon.svg"];
 
